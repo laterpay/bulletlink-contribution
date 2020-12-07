@@ -13,6 +13,10 @@ jQuery('#label-1').text('$' + footerOptions.amounts[0]);
 jQuery('#label-2').text('$' + footerOptions.amounts[1]);
 jQuery('#label-3').text('$' + footerOptions.amounts[2]);
 jQuery('#label-4').text('$' + footerOptions.amounts[3]);
+jQuery('#amount-1').val(footerOptions.amounts[0]*100);
+jQuery('#amount-2').val(footerOptions.amounts[1]*100);
+jQuery('#amount-3').val(footerOptions.amounts[2]*100);
+jQuery('#amount-4').val(footerOptions.amounts[3]*100);
 jQuery('.lp-footer-text-header').text(footerOptions.ctaHeader);
 jQuery('.lp-footer-text').text(footerOptions.ctaText);
 jQuery('#amount-other').val(footerOptions.otherText);
@@ -60,13 +64,7 @@ jQuery('.lp-amount-contribute').click(function(){
     var expireTime = time + 1000*1209600;
     now.setTime(expireTime);
 
-    if ($('input[name="type"]:checked').val() == 'single') {
         //document.cookie = 'laterpayFooter;expires='+now.toGMTString()+';path=/';
-        document.location = "https://web.uselaterpay.com/dialog/contribute/pay_now?url=https%3A%2F%2Fjhvonline.com%2F&campaign_id=0cb6df18-eafc-4a16-91aa-dcec43ddba7d&permalink=1&cp=HwAA74fyGR8MKh7zNZ5JPK&title=Contribution+to+Jewish+Herald-Voice&hmac=499ce6740061cb4458b394e400544ee43d83e88a8d15029f83a60376&custom_pricing=USD"+ amount;
-    }
-    else {
-        //contribute(500);
-    }
-
+              document.location = "https://jwt.laterpay.net/test/?amount="+ amount;
 
 });
