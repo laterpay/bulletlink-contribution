@@ -107,7 +107,7 @@ $('#lp-close-button').click(function () {
 $('#lp-confirm-amount').click(function (e) {
   e.preventDefault()
   // Make footer full-page
-  $('#lp-footer').css('height', '100vh')
+  $('#lp-footer').css('min-height', '100vh')
   $('#lp-confirm-amount').hide()
   setTimeout(function () {
     $('#lp-footer-bottom').css('display', 'flex')
