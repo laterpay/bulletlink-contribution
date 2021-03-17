@@ -1,4 +1,4 @@
-/* global localStorage, Stripe, XMLHttpRequest, $ */
+/* global localStorage, Stripe, $ */
 
 var footerOptions = {
   brandColor: '#FF3344',
@@ -141,29 +141,19 @@ $('#lp-userData-form').submit(function (e) {
   }
 
   // Make request to Tapper API
-  var xhttp = new XMLHttpRequest()
-  // What happens once the request has finished
-  xhttp.onreadystatechange = function () {
-    if (this.readyState === 4) {
-      var success = this.status === 200
+  $.post(
+    'https://tapper-contribution-endpoint.vercel.app/api/start-payment',
+    {
+      amount,
+      name: $('#lp-name-input').val(),
+      email: $('#lp-email-input').val()
+    },
+    // success callback
+    function (data) {
+      tabData.clientSecret = data.client_secret
+      tabData.publishableKey = data.publishable_key
 
-      // Error handling
-      if (!success) {
-        window.alert('An error occurred')
-        // Remove loading state from button
-        $('#lp-start-payment').prop('disabled', false).text('Pay by card')
-        return
-      }
-
-      // Parse payment intent data from response
-      var response = JSON.parse(this.responseText)
-      tabData.clientSecret = response.userId.toString()
-      tabData.publishableKey = response.id.toString()
-
-      console.log('Reponse from Tapper API', {
-        client_secret: tabData.clientSecret,
-        publishable_key: tabData.publishableKey
-      })
+      console.log('Reponse from Tapper API', data)
 
       // Show payment form
       $('#lp-amount-form').hide()
@@ -172,7 +162,7 @@ $('#lp-userData-form').submit(function (e) {
       $('#lp-selected-amount').text('$' + amount / 100)
 
       // Initialize Stripe Elements
-      var stripe = Stripe(tabData.publishableKey)
+      stripe = Stripe(tabData.publishableKey)
       var elements = stripe.elements()
       var style = {
         base: {
@@ -187,10 +177,13 @@ $('#lp-userData-form').submit(function (e) {
       setTimeout(function () {
         lpCreditCardInput.focus()
       }, 200)
-    }
-  }
-  xhttp.open('GET', 'https://jsonplaceholder.typicode.com/todos/1', true)
-  xhttp.send()
+    })
+    .fail(function () {
+      window.alert('An error occurred')
+      // Remove loading state from button
+      $('#lp-start-payment').prop('disabled', false).text('Pay by card')
+    })
+
   console.log('Request to Tapper API', tabData)
 })
 
@@ -198,39 +191,38 @@ $('#lp-userData-form').submit(function (e) {
 $('#lp-payment-form').submit(function (e) {
   e.preventDefault()
 
-  // Show success message
-  $('#lp-payment-form').hide()
-  $('#lp-success').show()
+  stripe.confirmCardPayment(
+    tabData.clientSecret,
+    {
+      payment_method: {
+        card: lpCreditCardInput,
+        billing_details: {
+          name: tabData.name
+        }
+      },
+      receipt_email: tabData.email
+    }
+  ).then(function (result) {
+    if (result.error) {
+      // Show error to your customer (e.g., insufficient funds)
+      window.alert(result.error.message)
+    } else {
+      // The payment has been processed!
+      if (result.paymentIntent.status === 'succeeded') {
+        // Show success message
+        $('#lp-payment-form').hide()
+        $('#lp-success').show()
 
-  if (browserSupportsWebStorage) {
-    // Save contribution timestamp in local storage
-    localStorage.lp_last_contribution_at = Date.now()
-  }
+        if (browserSupportsWebStorage) {
+          // Save contribution timestamp in local storage
+          localStorage.lp_last_contribution_at = Date.now()
+        }
 
-  // Automatically close footer after 3 seconds
-  setTimeout(function () {
-    $('#lp-footer').fadeOut()
-  }, 3000)
-
-  // stripe.confirmCardPayment(tabData.clientSecret, {
-  //   payment_method: {
-  //     card: lpCreditCardInput,
-  //     billing_details: {
-  //       name: tabData.name
-  //     },
-  //     data: {
-  //       receipt_email: tabData.email
-  //     }
-  //   }
-  // }).then(function (result) {
-  //   if (result.error) {
-  //     // Show error to your customer (e.g., insufficient funds)
-  //     window.alert(result.error.message)
-  //   } else {
-  //     // The payment has been processed!
-  //     if (result.paymentIntent.status === 'succeeded') {
-  //       // Show a success message
-  //     }
-  //   }
-  // })
+        // Automatically close footer after 3 seconds
+        setTimeout(function () {
+          $('#lp-footer').fadeOut()
+        }, 3000)
+      }
+    }
+  })
 })
