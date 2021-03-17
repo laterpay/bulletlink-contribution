@@ -1,70 +1,236 @@
+/* global localStorage, Stripe, XMLHttpRequest, $ */
+
 var footerOptions = {
-	"lpid": "",
-	"ctaHeader": "The JHV needs your support",
-	"ctaText": "We are working hard to bring you news that matters to the Houston Jewish community. Your contribution will help the JHV continue to provide vital coverage during these important times.",
-	"otherText": "OTHER",
-	"buttonText": "CONTRIBUTE",
-	"amounts": ["4","8","10","12"]
-}	
-
-
-//Set up the footer based on the footerOptions object.
-jQuery('#label-1').text('$' + footerOptions.amounts[0]);
-jQuery('#label-2').text('$' + footerOptions.amounts[1]);
-jQuery('#label-3').text('$' + footerOptions.amounts[2]);
-jQuery('#label-4').text('$' + footerOptions.amounts[3]);
-jQuery('#amount-1').val(footerOptions.amounts[0]*100);
-jQuery('#amount-2').val(footerOptions.amounts[1]*100);
-jQuery('#amount-3').val(footerOptions.amounts[2]*100);
-jQuery('#amount-4').val(footerOptions.amounts[3]*100);
-jQuery('.lp-footer-text-header').text(footerOptions.ctaHeader);
-jQuery('.lp-footer-text').text(footerOptions.ctaText);
-jQuery('#amount-other').val(footerOptions.otherText);
-jQuery('#submit').text(footerOptions.buttonText);
-
-// If the laterPayFooter cookie is not set, show the footer.
-if (document.cookie.indexOf("laterpayFooter") === -1){
-    jQuery('#footer-header').css("display", "block");
+  brandColor: '#FF3344',
+  lpid: '',
+  ctaHeader: 'ABC needs your support',
+  ctaText: 'We are working hard to bring you news that matters. Your contribution will help us continue to provide vital coverage during these important times.',
+  customAmountText: 'Custom amount',
+  buttonText: 'Contribute',
+  amounts: ['4', '8', '10', '12']
 }
 
-jQuery('#amount-other').click(function(){
-    jQuery('#amount-other').val('$ ');
-    jQuery(".lp-radio-amount").prop('checked', false);
-});
+// Set up the footer based on the footerOptions object.
+$('#lp-footer').css('border-top-color', footerOptions.brandColor)
+$('#lp-cta-title').text(footerOptions.ctaHeader)
+$('#lp-cta-text').text(footerOptions.ctaText)
+$('[for=lp-amount-1]').text('$' + footerOptions.amounts[0])
+$('[for=lp-amount-2]').text('$' + footerOptions.amounts[1])
+$('[for=lp-amount-3]').text('$' + footerOptions.amounts[2])
+$('[for=lp-amount-4]').text('$' + footerOptions.amounts[3])
+$('#lp-amount-1').val(footerOptions.amounts[0] * 100)
+$('#lp-amount-2').val(footerOptions.amounts[1] * 100)
+$('#lp-amount-3').val(footerOptions.amounts[2] * 100)
+$('#lp-amount-4').val(footerOptions.amounts[3] * 100)
+$('#lp-custom-amount-placeholder').text(footerOptions.customAmountText)
+$('#lp-confirm-amount').text(footerOptions.buttonText)
+$('#lp-submit-payment').text(footerOptions.buttonText)
 
-jQuery('#amount-other').blur(function(){
-    //jQuery('#amount-other').val('OTHER');
-    //jQuery("#amount-3").prop('checked', true);
-});
+var lpCreditCardInput, stripe, tabData
+
+// Check browser support for Web Storage
+var browserSupportsWebStorage = typeof Storage !== 'undefined'
+
+// Determine if footer should be displayed
+var shouldShowFooter = (function () {
+  if (!browserSupportsWebStorage) {
+    return false
+  }
+  var day = 60 * 60 * 24 * 1000
+  var yesterday = Date.now() - day
+  var month = day * 30
+  var monthAgo = Date.now() - month
+  var dismissedAt = parseInt(localStorage.lp_footer_dismissed_at)
+  var lastContributionAt = parseInt(localStorage.lp_last_contribution_at)
+  var dismissedToday = dismissedAt && dismissedAt > yesterday
+  var contributedThisMonth = lastContributionAt && lastContributionAt > monthAgo
+  /*
+  The footer will stay hidden if...
+    - the user has dismissed it in the last 24 hours (by clicking on the X)
+    - the user has made a contribution in the last 30 days
+  */
+  var hideFooter = dismissedToday || contributedThisMonth
+  return !hideFooter
+})()
+
+if (shouldShowFooter) {
+  $('#lp-footer').show()
+}
+
+// Hide input placeholder if the user clicks on it
+$('#lp-custom-amount-placeholder').click(function (e) {
+  $('#lp-custom-amount-placeholder').hide()
+})
+
+// Select custom amount input if the user clicks on it
+$('#lp-custom-amount').click(function () {
+  $('.lp-chooseAmount__radioInput').prop('checked', false)
+  $('#lp-custom-amount').addClass('selected')
+  $('#lp-custom-amount-input').focus()
+})
+
+// Enforce min & max value for input
+$('#lp-custom-amount-input').on('input', function () {
+  var value = $(this).val()
+  if ((value !== '') && (value.indexOf('.') === -1)) {
+    $(this).val(Math.max(Math.min(value, 999), 1))
+  }
+})
+
+// Reset custom amount input if the user clicks a preset amount
+$('#lp-amounts').click(function () {
+  $('#lp-custom-amount').removeClass('selected')
+  $('#lp-custom-amount-input').val('')
+  $('#lp-custom-amount-placeholder').css('display', 'flex')
+})
+
+// Reset custom amount input if it is empty
+$('#lp-custom-amount-input').blur(function (e) {
+  var isEmpty = !e.target.value
+  if (isEmpty) {
+    $('#lp-custom-amount').removeClass('selected')
+    $('#lp-custom-amount-placeholder').css('display', 'flex')
+    $('#lp-amount-1').prop('checked', true)
+  }
+})
 
 // Close the footer if the user clicks on the X
-jQuery(".lp-footer-close").click(function() {
-    document.cookie = "laterpayFooter";
-    jQuery("#lp-footer").css("display","none");
-});
+$('#lp-close-button').click(function () {
+  $('#lp-footer').hide()
+  if (browserSupportsWebStorage) {
+    // Save dismissed timestamp in local storage
+    localStorage.lp_footer_dismissed_at = Date.now()
+  }
+})
 
-// What happens when they click on the "contirbute" button
-jQuery('.lp-amount-contribute').click(function(){
+// What happens when the user confirms the contribution amount
+$('#lp-confirm-amount').click(function (e) {
+  e.preventDefault()
+  // Make footer full-page
+  $('#lp-footer').css('height', '100vh')
+  $('#lp-confirm-amount').hide()
+  setTimeout(function () {
+    $('#lp-footer-bottom').css('display', 'flex')
+    $('#lp-name-input').focus()
+  }, 200)
+})
 
-    if (jQuery('#amount-other').val() == 'OTHER') {
-        var amount = $('input[name="amount"]:checked').val();
+// What happens when the user starts the payment process
+$('#lp-userData-form').submit(function (e) {
+  e.preventDefault()
+
+  // Add loading state to button
+  $('#lp-start-payment').prop('disabled', true).text('Loading...')
+
+  // Calculate amount
+  var amount
+  var isCustomAmountSelected = !!$('#lp-custom-amount.selected').length
+  if (isCustomAmountSelected) {
+    amount = $('#lp-custom-amount-input').val()
+    amount = parseInt(amount) * 100
+  } else {
+    amount = $('input[name="amount"]:checked').val()
+    amount = parseInt(amount)
+  }
+
+  // Prepare data for AJAX request
+  tabData = {
+    amount,
+    name: $('#lp-name-input').val(),
+    email: $('#lp-email-input').val()
+  }
+
+  // Make request to Tapper API
+  var xhttp = new XMLHttpRequest()
+  // What happens once the request has finished
+  xhttp.onreadystatechange = function () {
+    if (this.readyState === 4) {
+      var success = this.status === 200
+
+      // Error handling
+      if (!success) {
+        window.alert('An error occurred')
+        // Remove loading state from button
+        $('#lp-start-payment').prop('disabled', false).text('Pay by card')
+        return
+      }
+
+      // Parse payment intent data from response
+      var response = JSON.parse(this.responseText)
+      tabData.clientSecret = response.userId.toString()
+      tabData.publishableKey = response.id.toString()
+
+      console.log('Reponse from Tapper API', {
+        client_secret: tabData.clientSecret,
+        publishable_key: tabData.publishableKey
+      })
+
+      // Show payment form
+      $('#lp-amount-form').hide()
+      $('#lp-userData-form').hide()
+      $('#lp-payment-form').css('display', 'flex')
+      $('#lp-selected-amount').text('$' + amount / 100)
+
+      // Initialize Stripe Elements
+      var stripe = Stripe(tabData.publishableKey)
+      var elements = stripe.elements()
+      var style = {
+        base: {
+          color: '#111',
+          fontSize: '18px'
+        }
+      }
+
+      // Mount credit card input
+      lpCreditCardInput = elements.create('card', { style: style })
+      lpCreditCardInput.mount('#card-element')
+      setTimeout(function () {
+        lpCreditCardInput.focus()
+      }, 200)
     }
-    else {         
-        var amount =  jQuery('#amount-other').val();
-        amount = amount.replace("$","");
-        amount = amount.replace(/\.\d+/g, "");
-        amount = amount.replace(".","");
-        amount = parseInt(amount)*100;
-    }
+  }
+  xhttp.open('GET', 'https://jsonplaceholder.typicode.com/todos/1', true)
+  xhttp.send()
+  console.log('Request to Tapper API', tabData)
+})
 
+// What happens when the user confirms the payment
+$('#lp-payment-form').submit(function (e) {
+  e.preventDefault()
 
-    var now = new Date();
-    var now = new Date();
-    var time = now.getTime();
-    var expireTime = time + 1000*1209600;
-    now.setTime(expireTime);
+  // Show success message
+  $('#lp-payment-form').hide()
+  $('#lp-success').show()
 
-        //document.cookie = 'laterpayFooter;expires='+now.toGMTString()+';path=/';
-              document.location = "https://jwt.laterpay.net/test/?amount="+ amount;
+  if (browserSupportsWebStorage) {
+    // Save contribution timestamp in local storage
+    localStorage.lp_last_contribution_at = Date.now()
+  }
 
-});
+  // Automatically close footer after 3 seconds
+  setTimeout(function () {
+    $('#lp-footer').fadeOut()
+  }, 3000)
+
+  // stripe.confirmCardPayment(tabData.clientSecret, {
+  //   payment_method: {
+  //     card: lpCreditCardInput,
+  //     billing_details: {
+  //       name: tabData.name
+  //     },
+  //     data: {
+  //       receipt_email: tabData.email
+  //     }
+  //   }
+  // }).then(function (result) {
+  //   if (result.error) {
+  //     // Show error to your customer (e.g., insufficient funds)
+  //     window.alert(result.error.message)
+  //   } else {
+  //     // The payment has been processed!
+  //     if (result.paymentIntent.status === 'succeeded') {
+  //       // Show a success message
+  //     }
+  //   }
+  // })
+})
