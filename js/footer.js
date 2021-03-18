@@ -1,4 +1,4 @@
-/* global localStorage, Stripe, $ */
+/* global alert, localStorage, sessionStorage, Stripe, $ */
 
 var footerOptions = {
   ctaHeader: 'ABC needs your support',
@@ -33,21 +33,19 @@ var shouldShowFooter = (function () {
   if (!browserSupportsWebStorage) {
     return false
   }
+  var dismissed = !!sessionStorage.lp_footer_dismissed
   var day = 60 * 60 * 24 * 1000
-  var yesterday = Date.now() - day
   var month = day * 30
   var monthAgo = Date.now() - month
-  var dismissedAt = parseInt(localStorage.lp_footer_dismissed_at)
   var lastContributionAt = parseInt(localStorage.lp_last_contribution_at)
-  var dismissedToday = dismissedAt && dismissedAt > yesterday
   var contributedThisMonth = lastContributionAt && lastContributionAt > monthAgo
   /*
   The footer will stay hidden if...
     - the user has dismissed it in the last 24 hours (by clicking on the X)
     - the user has made a contribution in the last 30 days
   */
-  var hideFooter = dismissedToday || contributedThisMonth
-  return !hideFooter
+  var showFooter = !dismissed && !contributedThisMonth
+  return showFooter
 })()
 
 if (shouldShowFooter) {
@@ -96,7 +94,7 @@ $('#lp-close-button').click(function () {
   $('#lp-footer').hide()
   if (browserSupportsWebStorage) {
     // Save dismissed timestamp in local storage
-    localStorage.lp_footer_dismissed_at = Date.now()
+    sessionStorage.lp_footer_dismissed = 1
   }
 })
 
@@ -176,7 +174,7 @@ $('#lp-userData-form').submit(function (e) {
       }, 200)
     })
     .fail(function () {
-      window.alert('An error occurred')
+      alert('An error occurred')
       // Remove loading state from button
       $('#lp-start-payment').prop('disabled', false).text('Pay by card')
     })
@@ -202,7 +200,7 @@ $('#lp-payment-form').submit(function (e) {
   ).then(function (result) {
     if (result.error) {
       // Show error to your customer (e.g., insufficient funds)
-      window.alert(result.error.message)
+      alert(result.error.message)
     } else {
       // The payment has been processed!
       if (result.paymentIntent.status === 'succeeded') {
