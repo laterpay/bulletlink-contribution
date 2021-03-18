@@ -1,8 +1,6 @@
 /* global localStorage, Stripe, $ */
 
 var footerOptions = {
-  brandColor: '#FF3344',
-  lpid: '',
   ctaHeader: 'ABC needs your support',
   ctaText: 'We are working hard to bring you news that matters. Your contribution will help us continue to provide vital coverage during these important times.',
   customAmountText: 'Custom amount',
@@ -11,7 +9,6 @@ var footerOptions = {
 }
 
 // Set up the footer based on the footerOptions object.
-$('#lp-footer').css('border-top-color', footerOptions.brandColor)
 $('#lp-cta-title').text(footerOptions.ctaHeader)
 $('#lp-cta-text').text(footerOptions.ctaText)
 $('[for=lp-amount-1]').text('$' + footerOptions.amounts[0])
