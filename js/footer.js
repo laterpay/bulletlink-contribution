@@ -193,6 +193,7 @@ $('#lp-payment-form').submit(function (e) {
       payment_method: {
         card: lpCreditCardInput,
         billing_details: {
+          email: tabData.email,
           name: tabData.name
         }
       },
