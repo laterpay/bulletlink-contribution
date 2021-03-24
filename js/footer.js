@@ -185,6 +185,7 @@ $('#lp-userData-form').submit(function (e) {
 // What happens when the user confirms the payment
 $('#lp-payment-form').submit(function (e) {
   e.preventDefault()
+  $('#lp-submit-payment').prop('disabled', true).text('Loading...')
 
   stripe.confirmCardPayment(
     tabData.clientSecret,
@@ -201,6 +202,8 @@ $('#lp-payment-form').submit(function (e) {
     if (result.error) {
       // Show error to your customer (e.g., insufficient funds)
       alert(result.error.message)
+      // Remove loading state from button
+      $('#lp-submit-payment').prop('disabled', false).text(footerOptions.buttonText)
     } else {
       // The payment has been processed!
       if (result.paymentIntent.status === 'succeeded') {
