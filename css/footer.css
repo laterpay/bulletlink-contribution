@@ -12,15 +12,8 @@
   border-top: #FF3344 4px solid;
   color: #111;
   font-size: 20px;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  min-height: 18rem;
   width: 100%;
-  z-index: 1000;
   padding: 1.25rem 1rem;
-  transition: min-height .5s ease-in-out;
-  overflow: scroll;
 }
 
 .lp-footer__top {

@@ -1,6 +1,6 @@
 /* global alert, localStorage, sessionStorage, Stripe, $ */
 
-var footerOptions = {
+const footerOptions = {
   ctaHeader: 'ABC needs your support',
   ctaText: 'We are working hard to bring you news that matters. Your contribution will help us continue to provide vital coverage during these important times.',
   customAmountText: 'Custom amount',
@@ -23,28 +23,43 @@ $('#lp-custom-amount-placeholder').text(footerOptions.customAmountText)
 $('#lp-confirm-amount').text(footerOptions.buttonText)
 $('#lp-submit-payment').text(footerOptions.buttonText)
 
-var lpCreditCardInput, stripe, tabData
+// Dynamically update the parent window's iframe height
+let frameHeight
+const updateFrameHeight = (explicitHeight) => {
+  const footerHeight = explicitHeight || document.getElementById('lp-footer').offsetHeight
+  if (frameHeight !== footerHeight) {
+    frameHeight = footerHeight
+    window.parent.postMessage({ frameHeight }, '*')
+  }
+}
+const makeFullHeight = () => {
+  window.parent.postMessage({ isFullHeight: true }, '*')
+}
+window.onload = () => updateFrameHeight()
+window.onresize = () => updateFrameHeight()
+
+let lpCreditCardInput, stripe, tabData
 
 // Check browser support for Web Storage
-var browserSupportsWebStorage = typeof Storage !== 'undefined'
+const browserSupportsWebStorage = typeof Storage !== 'undefined'
 
 // Determine if footer should be displayed
-var shouldShowFooter = (function () {
+const shouldShowFooter = (function () {
   if (!browserSupportsWebStorage) {
     return false
   }
-  var dismissed = !!sessionStorage.lp_footer_dismissed
-  var day = 60 * 60 * 24 * 1000
-  var month = day * 30
-  var monthAgo = Date.now() - month
-  var lastContributionAt = parseInt(localStorage.lp_last_contribution_at)
-  var contributedThisMonth = lastContributionAt && lastContributionAt > monthAgo
+  const dismissed = !!sessionStorage.lp_footer_dismissed
+  const day = 60 * 60 * 24 * 1000
+  const month = day * 30
+  const monthAgo = Date.now() - month
+  const lastContributionAt = parseInt(localStorage.lp_last_contribution_at)
+  const contributedThisMonth = lastContributionAt && lastContributionAt > monthAgo
   /*
   The footer will stay hidden if...
     - the user has dismissed it in the last 24 hours (by clicking on the X)
     - the user has made a contribution in the last 30 days
   */
-  var showFooter = !dismissed && !contributedThisMonth
+  const showFooter = !dismissed && !contributedThisMonth
   return showFooter
 })()
 
@@ -66,7 +81,7 @@ $('#lp-custom-amount').click(function () {
 
 // Enforce min & max value for input
 $('#lp-custom-amount-input').on('input', function () {
-  var value = $(this).val()
+  const value = $(this).val()
   if ((value !== '') && (value.indexOf('.') === -1)) {
     $(this).val(Math.max(Math.min(value, 999), 1))
   }
@@ -81,7 +96,7 @@ $('#lp-amounts').click(function () {
 
 // Reset custom amount input if it is empty
 $('#lp-custom-amount-input').blur(function (e) {
-  var isEmpty = !e.target.value
+  const isEmpty = !e.target.value
   if (isEmpty) {
     $('#lp-custom-amount').removeClass('selected')
     $('#lp-custom-amount-placeholder').css('display', 'flex')
@@ -95,6 +110,7 @@ $('#lp-close-button').click(function () {
   if (browserSupportsWebStorage) {
     // Save dismissed timestamp in local storage
     sessionStorage.lp_footer_dismissed = 1
+    updateFrameHeight(0)
   }
 })
 
@@ -104,6 +120,7 @@ $('#lp-confirm-amount').click(function (e) {
   // Make footer full-page
   $('#lp-footer').css('min-height', '100vh')
   $('#lp-confirm-amount').hide()
+  makeFullHeight()
   setTimeout(function () {
     $('#lp-footer-bottom').css('display', 'flex')
     $('#lp-name-input').focus()
@@ -118,8 +135,8 @@ $('#lp-userData-form').submit(function (e) {
   $('#lp-start-payment').prop('disabled', true).text('Loading...')
 
   // Calculate amount
-  var amount
-  var isCustomAmountSelected = !!$('#lp-custom-amount.selected').length
+  let amount
+  const isCustomAmountSelected = !!$('#lp-custom-amount.selected').length
   if (isCustomAmountSelected) {
     amount = $('#lp-custom-amount-input').val()
     amount = parseInt(amount) * 100
@@ -158,8 +175,8 @@ $('#lp-userData-form').submit(function (e) {
 
       // Initialize Stripe Elements
       stripe = Stripe(tabData.publishableKey)
-      var elements = stripe.elements()
-      var style = {
+      const elements = stripe.elements()
+      const style = {
         base: {
           color: '#111',
           fontSize: '18px'
