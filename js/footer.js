@@ -1,44 +1,8 @@
 /* global alert, localStorage, sessionStorage, Stripe, $ */
 
-const footerOptions = {
-  ctaHeader: 'ABC needs your support',
-  ctaText: 'We are working hard to bring you news that matters. Your contribution will help us continue to provide vital coverage during these important times.',
-  customAmountText: 'Custom amount',
-  buttonText: 'Contribute',
-  amounts: ['4', '8', '10', '12']
-}
+let footerOptions, lpCreditCardInput, stripe, tabData
 
-// Set up the footer based on the footerOptions object.
-$('#lp-cta-title').text(footerOptions.ctaHeader)
-$('#lp-cta-text').text(footerOptions.ctaText)
-$('[for=lp-amount-1]').text('$' + footerOptions.amounts[0])
-$('[for=lp-amount-2]').text('$' + footerOptions.amounts[1])
-$('[for=lp-amount-3]').text('$' + footerOptions.amounts[2])
-$('[for=lp-amount-4]').text('$' + footerOptions.amounts[3])
-$('#lp-amount-1').val(footerOptions.amounts[0] * 100)
-$('#lp-amount-2').val(footerOptions.amounts[1] * 100)
-$('#lp-amount-3').val(footerOptions.amounts[2] * 100)
-$('#lp-amount-4').val(footerOptions.amounts[3] * 100)
-$('#lp-custom-amount-placeholder').text(footerOptions.customAmountText)
-$('#lp-confirm-amount').text(footerOptions.buttonText)
-$('#lp-submit-payment').text(footerOptions.buttonText)
-
-// Dynamically update the parent window's iframe height
-let frameHeight
-const updateFrameHeight = (explicitHeight) => {
-  const footerHeight = explicitHeight || document.getElementById('lp-footer').offsetHeight
-  if (frameHeight !== footerHeight) {
-    frameHeight = footerHeight
-    window.parent.postMessage({ frameHeight }, '*')
-  }
-}
-const makeFullHeight = () => {
-  window.parent.postMessage({ isFullHeight: true }, '*')
-}
-window.onload = () => updateFrameHeight()
-window.onresize = () => updateFrameHeight()
-
-let lpCreditCardInput, stripe, tabData
+/* UTILS */
 
 // Check browser support for Web Storage
 const browserSupportsWebStorage = typeof Storage !== 'undefined'
@@ -63,9 +27,72 @@ const shouldShowFooter = (function () {
   return showFooter
 })()
 
-if (shouldShowFooter) {
-  $('#lp-footer').show()
+// Dynamically update the parent window's iframe height
+let frameHeight
+const updateFrameHeight = (explicitHeight) => {
+  const footerHeight = explicitHeight || document.getElementById('lp-footer').offsetHeight
+  if (frameHeight !== footerHeight) {
+    frameHeight = footerHeight
+    window.parent.postMessage({ frameHeight }, '*')
+  }
 }
+const makeFullHeight = () => {
+  window.parent.postMessage({ isFullHeight: true }, '*')
+}
+window.onload = () => updateFrameHeight()
+window.onresize = () => updateFrameHeight()
+
+/* Fetch data */
+
+// Extract merchant's client ID from script parameter
+const scriptParams = new URLSearchParams(window.location.search)
+const clientId = scriptParams.get('id')
+if (!clientId) {
+  console.error('No client ID was specified. Contributions footer will stay hidden.')
+}
+
+if (clientId && shouldShowFooter) {
+  // Fetch footer options for merchant
+  $.get(
+    'https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/footers/' + clientId,
+    undefined,
+    // success callback
+    function (data) {
+      const {
+        cta_header: ctaHeader,
+        cta_text: ctaText,
+        custom_amount_text: customAmountText,
+        button_text: buttonText,
+        amounts
+      } = data
+      footerOptions = data // store data in global variable for later use
+
+      // Set up the footer based on the returned data object.
+      if (ctaHeader) $('#lp-cta-title').text(ctaHeader)
+      if (ctaText) $('#lp-cta-text').text(ctaText)
+      if (amounts) {
+        $('[for=lp-amount-1]').text('$' + amounts[0])
+        $('[for=lp-amount-2]').text('$' + amounts[1])
+        $('[for=lp-amount-3]').text('$' + amounts[2])
+        $('[for=lp-amount-4]').text('$' + amounts[3])
+        $('#lp-amount-1').val(amounts[0] * 100)
+        $('#lp-amount-2').val(amounts[1] * 100)
+        $('#lp-amount-3').val(amounts[2] * 100)
+        $('#lp-amount-4').val(amounts[3] * 100)
+      }
+      if (customAmountText) $('#lp-custom-amount-placeholder').text(customAmountText)
+      if (buttonText) {
+        $('#lp-confirm-amount').text(buttonText)
+        $('#lp-submit-payment').text(buttonText)
+      }
+      $('#lp-footer').show()
+    })
+    .fail(function () {
+      console.error('Invalid client ID. Contributions footer will stay hidden.')
+    })
+}
+
+/* Click handlers */
 
 // Hide input placeholder if the user clicks on it
 $('#lp-custom-amount-placeholder').click(function (e) {
@@ -154,11 +181,12 @@ $('#lp-userData-form').submit(function (e) {
 
   // Make request to Tapper API
   $.post(
-    'https://tapper-contribution-endpoint.vercel.app/api/start-payment',
+    'https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/contribute', // 'https://tapper-contribution-endpoint.vercel.app/api/start-payment',
     {
       amount,
-      name: $('#lp-name-input').val(),
-      email: $('#lp-email-input').val()
+      client_id: clientId,
+      user_email: $('#lp-email-input').val(),
+      user_name: $('#lp-name-input').val()
     },
     // success callback
     function (data) {
