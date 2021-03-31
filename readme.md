@@ -1,5 +1,9 @@
 # On-page contributions footer
 
+## Demo
+
+[http://niklas.laterpaydemo.com/bulletlink/](http://niklas.laterpaydemo.com/bulletlink/)
+
 ## How to use it?
 
 Just add the following script tag to your site:
