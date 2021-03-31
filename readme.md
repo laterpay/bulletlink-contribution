@@ -15,12 +15,13 @@ Just add the following script tag to your site:
     data-button-text="Contribute"
     data-amounts="4,8,10,15"
   >
+  </script>
 ```
 The following attributes are required: `id`, `src`, `data-client-id`
 
 All other attributes are optional. They can be used to customize the appearance of the footer.
 
-If one or more optional attributes are not specified, the script will attempt to retrieve them by making a GET request to `https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/footers/{client_id}`. If a config option isn't returned from that endpoint, the footer will show a default value.
+If at least one optional attribute isn't specified, the script will attempt to retrieve a value by making a GET request to `https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/footers/{client_id}`. If that endpoint doesn't return a value either, the footer will just show a default value.
 
 
 ## How does it work?
