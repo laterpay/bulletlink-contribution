@@ -20,14 +20,16 @@ The following attributes are required: `id`, `src`, `data-client-id`
 
 All other attributes are optional. They can be used to customize the appearance of the footer.
 
+If one or more optional attributes are not specified, the script will attempt to retrieve them by making a GET request to `https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/footers/{client_id}`. If a config option isn't returned from that endpoint, the footer will show a default value.
+
 
 ## How does it work?
 
 The script will add an iframe to the page, which contains the contributions footer. There are no page redirects. The entire payment flow takes place on the merchant's site.
 
-When a user clicks the **✕** symbol at the top right corner, the footer will disappear and won't be displayed again for the remainder of the browser session.
+When a user clicks the **✕** symbol in the top right corner, the footer will disappear and won't be displayed again for the remainder of the browser session.
 
-When a user makes a contribution, they will see a thank you message for 5 seconds. After that, the footer will disappear and won't be displayed again for the next 30 days.
+When a user makes a contribution, they will see a thank you message for 3 seconds. After that, the footer will disappear and won't be displayed again for the next 30 days.
 
 
 ## Testing
