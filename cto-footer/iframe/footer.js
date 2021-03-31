@@ -1,98 +1,98 @@
-/* global alert, localStorage, sessionStorage, Stripe, $ */
+/* GLOBAL VARS */
 
-let footerOptions, lpCreditCardInput, stripe, tabData
+/* global alert, Stripe, $ */
+let clientId, creditCardInput, stripe, tabData
+const footerConfig = {
+  ctaHeader: null,
+  ctaText: null,
+  buttonText: null,
+  customAmountText: null,
+  amounts: null
+}
 
-/* UTILS */
-
-// Check browser support for Web Storage
-const browserSupportsWebStorage = typeof Storage !== 'undefined'
-
-// Determine if footer should be displayed
-const shouldShowFooter = (function () {
-  if (!browserSupportsWebStorage) {
-    return false
-  }
-  const dismissed = !!sessionStorage.lp_footer_dismissed
-  const day = 60 * 60 * 24 * 1000
-  const month = day * 30
-  const monthAgo = Date.now() - month
-  const lastContributionAt = parseInt(localStorage.lp_last_contribution_at)
-  const contributedThisMonth = lastContributionAt && lastContributionAt > monthAgo
-  /*
-  The footer will stay hidden if...
-    - the user has dismissed it in the last 24 hours (by clicking on the X)
-    - the user has made a contribution in the last 30 days
-  */
-  const showFooter = !dismissed && !contributedThisMonth
-  return showFooter
-})()
+/* HELPERS */
 
 // Dynamically update the parent window's iframe height
-let frameHeight
-const updateFrameHeight = (explicitHeight) => {
+let iframeHeight
+const adjustFooterHeight = (explicitHeight) => {
   const footerHeight = explicitHeight || document.getElementById('lp-footer').offsetHeight
-  if (frameHeight !== footerHeight) {
-    frameHeight = footerHeight
-    window.parent.postMessage({ frameHeight }, '*')
+  if (iframeHeight !== footerHeight) {
+    iframeHeight = footerHeight
+    window.parent.postMessage({ ctoIframeHeight: iframeHeight }, '*')
   }
 }
-const makeFullHeight = () => {
-  window.parent.postMessage({ isFullHeight: true }, '*')
+window.onload = () => adjustFooterHeight()
+window.onresize = () => adjustFooterHeight()
+window.onmessage = ({ data }) => {
+  if (data.clientId) {
+    clientId = data.clientId
+    console.log(clientId)
+    Object.keys(footerConfig).forEach(key => {
+      // Replace footerConfig defaults if a corresponding data attribute exists
+      if (data[key]) footerConfig[key] = data[key]
+    })
+    const isConfigIncomplete = !!Object.values(footerConfig).filter(value => !value).length // returns true if at least one value is null
+    if (isConfigIncomplete) {
+      fetchFooterConfigFromDB(clientId)
+      return
+    }
+    showFooter()
+  }
+  if (!clientId) {
+    console.error('No client ID was specified. Contributions footer will stay hidden.')
+  }
 }
-window.onload = () => updateFrameHeight()
-window.onresize = () => updateFrameHeight()
 
-/* Fetch data */
-
-// Extract merchant's client ID from script parameter
-const scriptParams = new URLSearchParams(window.location.search)
-const clientId = scriptParams.get('id')
-if (!clientId) {
-  console.error('No client ID was specified. Contributions footer will stay hidden.')
+const showFooter = () => {
+  if (clientId && footerConfig) {
+    // Set up the footer based on the returned data object.
+    if (footerConfig.ctaHeader) {
+      $('#lp-cta-title').text(footerConfig.ctaHeader)
+    }
+    if (footerConfig.ctaText) {
+      $('#lp-cta-text').text(footerConfig.ctaText)
+    }
+    if (footerConfig.amounts) {
+      for (var i = 0; i < 4; i++) {
+        $(`[for=lp-amount-${i + 1}]`).text('$' + footerConfig.amounts[i])
+        $(`#lp-amount-${i + 1}`).val(footerConfig.amounts[i] * 100)
+      }
+    }
+    if (footerConfig.customAmountText) {
+      $('#lp-custom-amount-placeholder').text(footerConfig.customAmountText)
+    }
+    if (footerConfig.buttonText) {
+      $('#lp-confirm-amount').text(footerConfig.buttonText)
+      $('#lp-submit-payment').text(footerConfig.buttonText)
+    }
+    $('#lp-footer').show()
+    adjustFooterHeight()
+  }
 }
 
-if (clientId && shouldShowFooter) {
-  // Fetch footer options for merchant
+const fetchFooterConfigFromDB = clientId => {
+  // Fetch footer options for given clientId
   $.get(
     'https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/footers/' + clientId,
     undefined,
     // success callback
     function (data) {
-      const {
-        cta_header: ctaHeader,
-        cta_text: ctaText,
-        custom_amount_text: customAmountText,
-        button_text: buttonText,
-        amounts
-      } = data
-      footerOptions = data // store data in global variable for later use
-
-      // Set up the footer based on the returned data object.
-      if (ctaHeader) $('#lp-cta-title').text(ctaHeader)
-      if (ctaText) $('#lp-cta-text').text(ctaText)
-      if (amounts) {
-        $('[for=lp-amount-1]').text('$' + amounts[0])
-        $('[for=lp-amount-2]').text('$' + amounts[1])
-        $('[for=lp-amount-3]').text('$' + amounts[2])
-        $('[for=lp-amount-4]').text('$' + amounts[3])
-        $('#lp-amount-1').val(amounts[0] * 100)
-        $('#lp-amount-2').val(amounts[1] * 100)
-        $('#lp-amount-3').val(amounts[2] * 100)
-        $('#lp-amount-4').val(amounts[3] * 100)
-      }
-      if (customAmountText) $('#lp-custom-amount-placeholder').text(customAmountText)
-      if (buttonText) {
-        $('#lp-confirm-amount').text(buttonText)
-        $('#lp-submit-payment').text(buttonText)
-      }
-      $('#lp-footer').show()
+      // Populate empty footerConfig fields with data from the GET request
+      Object.entries(footerConfig).forEach(([key, value]) => {
+        const pascalCaseToSnakeCase = input => input.split(/(?=[A-Z])/).join('_').toLowerCase()
+        const snakeCaseKey = pascalCaseToSnakeCase(key)
+        if (!value && data[snakeCaseKey]) {
+          footerConfig[key] = data[snakeCaseKey]
+        }
+      })
+      showFooter()
     })
     .fail(function () {
       console.error('Invalid client ID. Contributions footer will stay hidden.')
     })
 }
 
-/* Click handlers */
+/* EVENT HANDLERS */
 
 // Hide input placeholder if the user clicks on it
 $('#lp-custom-amount-placeholder').click(function (e) {
@@ -134,11 +134,7 @@ $('#lp-custom-amount-input').blur(function (e) {
 // Close the footer if the user clicks on the X
 $('#lp-close-button').click(function () {
   $('#lp-footer').hide()
-  if (browserSupportsWebStorage) {
-    // Save dismissed timestamp in local storage
-    sessionStorage.lp_footer_dismissed = 1
-    updateFrameHeight(0)
-  }
+  window.parent.postMessage({ ctoFooterDismissed: true }, '*')
 })
 
 // What happens when the user confirms the contribution amount
@@ -147,7 +143,7 @@ $('#lp-confirm-amount').click(function (e) {
   // Make footer full-page
   $('#lp-footer').css('min-height', '100vh')
   $('#lp-confirm-amount').hide()
-  makeFullHeight()
+  adjustFooterHeight('100vh')
   setTimeout(function () {
     $('#lp-footer-bottom').css('display', 'flex')
     $('#lp-name-input').focus()
@@ -212,10 +208,10 @@ $('#lp-userData-form').submit(function (e) {
       }
 
       // Mount credit card input
-      lpCreditCardInput = elements.create('card', { style: style })
-      lpCreditCardInput.mount('#card-element')
+      creditCardInput = elements.create('card', { style: style })
+      creditCardInput.mount('#card-element')
       setTimeout(function () {
-        lpCreditCardInput.focus()
+        creditCardInput.focus()
       }, 200)
     })
     .fail(function () {
@@ -236,7 +232,7 @@ $('#lp-payment-form').submit(function (e) {
     tabData.clientSecret,
     {
       payment_method: {
-        card: lpCreditCardInput,
+        card: creditCardInput,
         billing_details: {
           email: tabData.email,
           name: tabData.name
@@ -249,18 +245,14 @@ $('#lp-payment-form').submit(function (e) {
       // Show error to your customer (e.g., insufficient funds)
       alert(result.error.message)
       // Remove loading state from button
-      $('#lp-submit-payment').prop('disabled', false).text(footerOptions.buttonText)
+      $('#lp-submit-payment').prop('disabled', false).text(footerConfig.buttonText)
     } else {
       // The payment has been processed!
       if (result.paymentIntent.status === 'succeeded') {
         // Show success message
         $('#lp-payment-form').hide()
         $('#lp-success').show()
-
-        if (browserSupportsWebStorage) {
-          // Save contribution timestamp in local storage
-          localStorage.lp_last_contribution_at = Date.now()
-        }
+        window.parent.postMessage({ ctoContributionMade: true }, '*')
 
         // Automatically close footer after 3 seconds
         setTimeout(function () {

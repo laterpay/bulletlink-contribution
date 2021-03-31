@@ -14,8 +14,9 @@
   font-size: 20px;
   width: 100%;
   padding: 1.25rem 1rem;
-  min-height: 18rem;
+  min-height: 0; /* must have an explicit value for the transition below to work */
   transition: min-height .5s ease-in-out;
+  overflow-y: scroll;
 }
 
 .lp-footer__top {

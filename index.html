@@ -1,46 +1,29 @@
 <html>
   <head>
-    <title>Contributions Footer</title>
-    <link rel="stylesheet" href="css/footer.css">
+    <title>Contributions Footer Demo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      body {
-        background-color: #333;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-        margin: 0;
-      }
-      #contributions-iframe {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-      }
-    </style>
   </head>
-<body>
+<body style="background-color: #333;">
+  <!-- Demo content -->
+  <div id="demo-alert" style="display: none; background: white; font-family: sans-serif; font-size: 1.25rem; padding: 1rem; text-align: center; position: fixed; top: 0; left: 0; right: 0;"></div>
+  <script src="demo/alert.js"></script>
   <div style="color: rgba(255,255,255,.5); padding: 2rem; text-align: justify; font-size: 3rem; filter: blur(5px)">
-    I'm baby whatever letterpress twee hot chicken helvetica lyft, hammock tbh chartreuse hoodie vaporware fam forage selvage shoreditch. Aesthetic fixie seitan schlitz, pour-over 8-bit four dollar toast. Microdosing kombucha yr schlitz organic intelligentsia +1. Photo booth post-ironic truffaut humblebrag, kombucha green juice blue bottle fashion axe selfies raw denim pok pok scenester flannel. Crucifix migas polaroid heirloom VHS readymade cronut health goth. Mumblecore wayfarers glossier chartreuse before they sold out salvia palo santo gochujang activated charcoal.
-
-    Bitters celiac chambray leggings prism crucifix. Gentrify cronut chicharrones flexitarian. Tacos craft beer health goth microdosing vaporware. Cray drinking vinegar messenger bag 3 wolf moon whatever tote bag sustainable. Cloud bread cornhole gentrify gluten-free man bun lo-fi bespoke artisan waistcoat ethical pour-over kitsch try-hard 3 wolf moon.
-
-    Hoodie food truck mlkshk kogi bushwick kickstarter retro affogato. Locavore cloud bread bespoke YOLO swag etsy, distillery bitters man bun coloring book quinoa knausgaard. Enamel pin copper mug kombucha, hot chicken deep v mlkshk ramps. Mustache bicycle rights la croix paleo, readymade thundercats YOLO kogi stumptown locavore four dollar toast VHS messenger bag. Viral chartreuse intelligentsia, twee readymade craft beer seitan.
-
-    Meggings vape kickstarter, freegan hexagon jianbing williamsburg iPhone brooklyn synth cornhole hella butcher. Green juice squid kickstarter celiac tbh asymmetrical lyft keffiyeh microdosing mlkshk. Fixie single-origin coffee hammock mixtape. Vexillologist heirloom subway tile, green juice photo booth yr iPhone tumblr truffaut banjo pinterest fingerstache tattooed cliche migas. Marfa meh shabby chic VHS jean shorts. Organic deep v meditation migas blog. Fixie air plant neutra photo booth, scenester shoreditch occupy direct trade beard YOLO.
-
-    Wayfarers succulents master cleanse photo booth seitan slow-carb, letterpress chambray twee keytar. Church-key roof party next level pop-up flannel austin pickled echo park tacos celiac la croix fingerstache. Squid poutine food truck, tousled butcher affogato forage live-edge cred. Dreamcatcher polaroid affogato plaid cornhole pug fam. Cold-pressed raclette kale chips, shoreditch pug waistcoat fingerstache affogato single-origin coffee. Vape kombucha craft beer, swag VHS hexagon taxidermy.
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean feugiat ex est, vitae tincidunt ex vehicula ut. Quisque ullamcorper viverra justo, quis tempus lectus tincidunt at. Sed et leo elit. Nullam porttitor, lorem at tempus pretium, nulla odio euismod sem, in interdum dui sapien consequat quam. Fusce egestas dolor non dui tristique sagittis. Proin non dui tristique, elementum nisl ut, pellentesque est. Pellentesque tincidunt leo condimentum erat tempor, eget luctus nisi volutpat. Ut id risus nec purus auctor mollis. Vestibulum tristique lobortis ipsum, ut rhoncus est viverra eu.
+    Mauris vulputate justo massa, quis condimentum nisi dictum eu. Nullam accumsan, massa non imperdiet posuere, turpis orci sollicitudin turpis, ut hendrerit leo ex at mi. Praesent placerat justo nunc, vitae efficitur lorem porttitor vitae. Cras placerat molestie nulla sed ultricies. Nulla at vulputate mauris, in interdum augue. Etiam placerat porttitor bibendum. Nullam vitae sem in neque sodales gravida. In non elit a metus convallis elementum finibus vitae turpis. Cras consectetur pulvinar urna, at accumsan augue tristique id. Etiam suscipit eget est at condimentum. Aliquam erat volutpat. Quisque in elit porta, rhoncus eros ut, vestibulum nisl. Nulla mollis fringilla euismod. Proin et vestibulum turpis. Donec venenatis et mi at venenatis. Quisque sed odio magna.
+    Cras bibendum eget dui sed rutrum. Ut turpis mi, tincidunt ut sem eget, feugiat dictum dui. Aliquam vitae dignissim orci. Integer placerat felis eget feugiat suscipit. Maecenas aliquam mollis bibendum. Praesent tempus libero ut quam molestie ornare. Nunc ut libero est. Nunc ex enim, euismod id gravida non, aliquam et nibh. Maecenas finibus tincidunt orci, ut ullamcorper diam mattis ac. Mauris pellentesque ipsum felis. Suspendisse in augue erat. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent laoreet aliquet imperdiet. Etiam eros sapien, feugiat ac dui ac, tempus placerat lectus. Quisque ullamcorper vitae nunc ac lobortis. Integer cursus ante dignissim gravida pulvinar.
   </div>
-  <iframe id="contributions-iframe" src="iframe.html?id=client.5c8ead95-9fff-48ca-ae87-53f5d3d3429e" style="width:100%;border:none;height:0;overflow-y:scroll;"></iframe>
-  <script>
-    window.onmessage = (e) => {
-      if (e.data.hasOwnProperty("frameHeight")) {
-        document.getElementById("contributions-iframe").style.height = `${e.data.frameHeight}px`
-      }
-      if (e.data.isFullHeight) {
-        document.getElementById("contributions-iframe").style.minHeight = '100vh'
-      }
-    }
+  <!-- The script tag below will display the footer -->
+  <script
+    id="cto-footer"
+    src="http://niklas.laterpaydemo.com/cto-footer/on-page.js"
+    data-client-id="client.5c8ead95-9fff-48ca-ae87-53f5d3d3429e"
+    data-cta-header="ABC needs your support"
+    data-cta-text="We are working hard to bring you news that matters. Your contribution will help us continue to provide vital coverage during these important times."
+    data-custom-amount-text="Custom amount"
+    data-button-text="Contribute"
+    data-amounts="4,8,10,15"
+  >
   </script>
-  <script src="js/demo.js"></script>
   </body>
 </html>

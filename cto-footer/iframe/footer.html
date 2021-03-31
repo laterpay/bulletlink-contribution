@@ -1,7 +1,7 @@
 <html>
   <head>
     <title>Contributions Footer</title>
-    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="footer.css">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -23,25 +23,31 @@
     </svg>
     <div class="lp-footer__top">
       <div class="lp-cta">
-        <h3 class="lp-cta__heading" id="lp-cta-title"></h3>
-        <p class="lp-cta__text" id="lp-cta-text"></p>
+        <h3 class="lp-cta__heading" id="lp-cta-title">
+          This is the default header
+        </h3>
+        <p class="lp-cta__text" id="lp-cta-text">
+          This is the default body text
+        </p>
       </div>
       <form action="#" class="lp-chooseAmount__form" id="lp-amount-form"> 
         <div class="lp-chooseAmount__optionsGroup">
           <div class="lp-chooseAmount__presetAmounts" id="lp-amounts">
-            <input type="radio" name="amount" id="lp-amount-1" class="lp-chooseAmount__radioInput" checked>
-            <label for="lp-amount-1" id="lp-amount-label-1" class="lp-chooseAmount__option"></label>
-            <input type="radio" name="amount" id="lp-amount-2"class="lp-chooseAmount__radioInput" >
-            <label for="lp-amount-2" id="lp-amount-label-2" class="lp-chooseAmount__option"></label>
-            <input type="radio" name="amount" id="lp-amount-3"class="lp-chooseAmount__radioInput" >
-            <label for="lp-amount-3" id="lp-amount-label-3" class="lp-chooseAmount__option"></label>
-            <input type="radio" name="amount" id="lp-amount-4"class="lp-chooseAmount__radioInput" >
-            <label for="lp-amount-4" id="lp-amount-label-4" class="lp-chooseAmount__option"></label>
+            <input type="radio" name="amount" id="lp-amount-1" class="lp-chooseAmount__radioInput" value="100" checked>
+            <label for="lp-amount-1" id="lp-amount-label-1" class="lp-chooseAmount__option">$1</label>
+            <input type="radio" name="amount" id="lp-amount-2"class="lp-chooseAmount__radioInput" value="200" >
+            <label for="lp-amount-2" id="lp-amount-label-2" class="lp-chooseAmount__option">$2</label>
+            <input type="radio" name="amount" id="lp-amount-3"class="lp-chooseAmount__radioInput" value="300" >
+            <label for="lp-amount-3" id="lp-amount-label-3" class="lp-chooseAmount__option">$3</label>
+            <input type="radio" name="amount" id="lp-amount-4"class="lp-chooseAmount__radioInput" value="400" >
+            <label for="lp-amount-4" id="lp-amount-label-4" class="lp-chooseAmount__option">$4</label>
           </div>
           <div class="lp-chooseAmount__option lp-currencyInput" id="lp-custom-amount">
             <label for="lp-custom-amount-input" class="lp-currencyInput__label">$</label>
             <input type="number" min="1" max="1000" class="lp-currencyInput__input" id="lp-custom-amount-input">
-            <div class="lp-currencyInput__placeholder" id="lp-custom-amount-placeholder"></div>
+            <div class="lp-currencyInput__placeholder" id="lp-custom-amount-placeholder">
+              Custom amount
+            </div>
           </div>
         </div>
         <button class="lp-button lp-button--amount" id="lp-confirm-amount">
@@ -93,6 +99,6 @@
   </div>
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://js.stripe.com/v3/"></script>
-  <script src="js/footer.js"></script>
+  <script src="footer.js"></script>
   </body>
 </html>
