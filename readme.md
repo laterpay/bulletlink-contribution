@@ -25,12 +25,14 @@ The following attributes are required: `id`, `src`, `data-client-id`
 
 All other attributes are optional. They can be used to customize the appearance of the footer.
 
-If at least one optional attribute isn't specified, the script will attempt to retrieve a value by making a GET request to `https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/footers/{client_id}`. If that endpoint doesn't return a value either, the footer will just show a default value.
+If at least one optional config value isn't specified, the script will attempt to retrieve that value by making a GET request to `https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/footers/{client_id}`. If this endpoint doesn't return the missing value either, the footer will just show a default value.
 
 
 ## How does it work?
 
 The script will add an iframe to the page, which contains the contributions footer. There are no page redirects. The entire payment flow takes place on the merchant's site.
+
+Before the credit card form is displayed, the footer will make a POST request to `https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/contribute`. This Xano endpoint communicates with Tapper via `client_credentials` to create a Tab and to retrieve a `client_secret` and a `publishable_key` for Stripe Elements.
 
 When a user clicks the **✕** symbol in the top right corner, the footer will disappear and won't be displayed again for the remainder of the browser session.
 
