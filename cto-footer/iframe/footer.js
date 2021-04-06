@@ -162,7 +162,8 @@ $('#lp-userData-form').submit(function (e) {
   const isCustomAmountSelected = !!$('#lp-custom-amount.selected').length
   if (isCustomAmountSelected) {
     amount = $('#lp-custom-amount-input').val()
-    amount = parseInt(amount) * 100
+    amount = parseFloat(amount) * 100
+    if (amount < 100) amount = 100 // minimum contribution $1
   } else {
     amount = $('input[name="amount"]:checked').val()
     amount = parseInt(amount)
