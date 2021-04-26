@@ -7,7 +7,8 @@ const footerConfig = {
   ctaText: null,
   buttonText: null,
   customAmountText: null,
-  amounts: null
+  amounts: null,
+  highlightColor: null
 }
 
 /* HELPERS */
@@ -64,6 +65,9 @@ const showFooter = () => {
     if (footerConfig.buttonText) {
       $('#lp-confirm-amount').text(footerConfig.buttonText)
       $('#lp-submit-payment').text(footerConfig.buttonText)
+    }
+    if (footerConfig.highlightColor && footerConfig.highlightColor.startsWith('#')) {
+      $('#lp-footer').css('border-color', footerConfig.highlightColor)
     }
     $('#lp-footer').show()
     adjustFooterHeight()
