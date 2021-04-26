@@ -3,6 +3,16 @@
 // Check browser support for Web Storage
 const browserSupportsWebStorage = typeof Storage !== 'undefined'
 
+const waitForBody = (callback) => {
+  if (document.body) {
+    callback()
+  } else {
+    setTimeout(() => {
+      waitForBody(callback)
+    }, 100)
+  }
+}
+
 // Determine if footer should be displayed
 const shouldShowFooter = (function () {
   if (!browserSupportsWebStorage) {
@@ -27,9 +37,10 @@ if (shouldShowFooter) {
   /* Insert iframe */
   const iframe = document.createElement('iframe')
   iframe.id = 'contributions-iframe'
-  iframe.style.cssText = 'width: 100%; border: none; max-height: 100vh; position: fixed; bottom: 0; left: 0; right: 0;'
-  iframe.src = 'http://niklas.laterpaydemo.com/cto-footer/iframe/footer.html'
-  document.body.appendChild(iframe)
+  iframe.style.cssText = 'width: 100%; border: none; max-height: 100vh; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;'
+  iframe.src = 'https://niklas.laterpaydemo.com/cto-footer/iframe/footer.html'
+  // Only append iframe once body has loaded
+  waitForBody(() => document.body.appendChild(iframe))
 
   /* Get all data attributes from script tag and pass them down to the iframe */
   const scriptTag = document.getElementById('cto-footer')
