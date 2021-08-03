@@ -204,6 +204,19 @@ $('#lp-userData-form').submit(function (e) {
 
       // Initialize Stripe Elements
       stripe = Stripe(tabData.publishableKey)
+
+      // Create payment request (Apple Pay)
+      const paymentRequest = stripe.paymentRequest({
+        country: 'US',
+        currency: 'usd',
+        total: {
+          label: 'Demo total',
+          amount
+        },
+        // requestPayerName: true,
+        // requestPayerEmail: true,
+      });
+
       const elements = stripe.elements()
       const style = {
         base: {
@@ -211,6 +224,20 @@ $('#lp-userData-form').submit(function (e) {
           fontSize: '18px'
         }
       }
+
+      // Mount Payment Request Button
+      const prButton = elements.create('paymentRequestButton', {
+        paymentRequest,
+      });
+      (async () => {
+        // Check the availability of the Payment Request API first.
+        const result = await paymentRequest.canMakePayment();
+        if (result) {
+          prButton.mount('#payment-request-button');
+        } else {
+          document.getElementById('payment-request-button').style.display = 'none';
+        }
+      })();
 
       // Mount credit card input
       creditCardInput = elements.create('card', { style: style })
