@@ -37,7 +37,7 @@ if (shouldShowFooter) {
   /* Insert iframe */
   const iframe = document.createElement('iframe')
   iframe.id = 'contributions-iframe'
-  iframe.style.cssText = 'width: 100%; border: none; max-height: 100vh; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;'
+  iframe.style.cssText = 'width: 100%; border: none; max-height: 100vh; position: fixed; bottom: 0; left: 0; right: 0; z-index: 1003;'
   iframe.src = 'https://niklas.laterpaydemo.com/cto-footer/iframe/footer.html'
   // Only append iframe once body has loaded
   waitForBody(() => document.body.appendChild(iframe))
