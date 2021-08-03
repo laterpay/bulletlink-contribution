@@ -165,12 +165,14 @@ $('#lp-userData-form').submit(function (e) {
   let amount
   const isCustomAmountSelected = !!$('#lp-custom-amount.selected').length
   if (isCustomAmountSelected) {
-    amount = $('#lp-custom-amount-input').val()
+    amount = $('#lp-custom-amount-input').val().replace('$', '')
     amount = parseFloat(amount) * 100
-    if (amount < 100) amount = 100 // minimum contribution $1
   } else {
-    amount = $('input[name="amount"]:checked').val()
+    amount = $('input[name="amount"]:checked').val().replace('$', '')
     amount = parseInt(amount)
+  }
+  if (amount < 100 || isNaN(amount)) {
+    amount = 100 // minimum contribution $1
   }
 
   // Prepare data for AJAX request
@@ -212,10 +214,10 @@ $('#lp-userData-form').submit(function (e) {
         total: {
           label: 'Demo total',
           amount
-        },
+        }
         // requestPayerName: true,
         // requestPayerEmail: true,
-      });
+      })
 
       const elements = stripe.elements()
       const style = {
@@ -227,17 +229,17 @@ $('#lp-userData-form').submit(function (e) {
 
       // Mount Payment Request Button
       const prButton = elements.create('paymentRequestButton', {
-        paymentRequest,
+        paymentRequest
       });
       (async () => {
         // Check the availability of the Payment Request API first.
-        const result = await paymentRequest.canMakePayment();
+        const result = await paymentRequest.canMakePayment()
         if (result) {
-          prButton.mount('#payment-request-button');
+          prButton.mount('#payment-request-button')
         } else {
-          document.getElementById('payment-request-button').style.display = 'none';
+          document.getElementById('payment-request-button').style.display = 'none'
         }
-      })();
+      })()
 
       // Mount credit card input
       creditCardInput = elements.create('card', { style: style })
