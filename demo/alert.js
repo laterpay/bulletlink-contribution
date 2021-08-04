@@ -12,7 +12,7 @@
     const alert = document.getElementById('demo-alert')
     alert.style.display = 'block'
     if (footerDismissed) {
-      alert.innerHTML = 'Footer has been dismissed. Open this page in a new tab to start a new session.'
+      alert.innerHTML = 'The footer has been dismissed. Open this page in a new tab to start a new session.'
     }
     if (lastContributionAt) {
       var date = new Date(parseInt(lastContributionAt))
@@ -22,8 +22,8 @@
         day: '2-digit', // "01"
         year: 'numeric' // "2019"
       })
-      alert.innerHTML = `You made a contribution on ${localizedDate}. The footer will remain hidden.<br/>
-      Delete <code>localStorage.cto_last_contribution_at</code> to display the footer again.`
+      alert.innerHTML = `You made a contribution on ${localizedDate}.<br/>
+      Delete <code>cto_last_contribution_at</code> from Local Storage to show the footer again.`
     }
 
     // Add element to DOM
