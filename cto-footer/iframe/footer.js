@@ -2,13 +2,11 @@
 
 /* global alert, Stripe, $ */
 let clientId, creditCardInput, stripe, tabData
+
 const footerConfig = {
   ctaHeader: null,
   ctaText: null,
-  buttonText: null,
-  customAmountText: null,
-  amounts: null,
-  highlightColor: null
+  amounts: null
 }
 
 /* HELPERS */
@@ -59,16 +57,6 @@ const showFooter = () => {
         $(`#lp-amount-${i + 1}`).val(footerConfig.amounts[i] * 100)
       }
     }
-    // if (footerConfig.customAmountText) {
-    //   $('#lp-custom-amount-placeholder').text(footerConfig.customAmountText)
-    // }
-    // if (footerConfig.buttonText) {
-    //   $('#lp-confirm-amount').text(footerConfig.buttonText)
-    //   $('#lp-submit-payment').text(footerConfig.buttonText)
-    // }
-    // if (footerConfig.highlightColor && footerConfig.highlightColor.startsWith('#')) {
-    //   $('#lp-footer').css('border-color', footerConfig.highlightColor)
-    // }
     $('#lp-footer').show()
     adjustFooterHeight()
   }
@@ -281,7 +269,7 @@ $('#lp-payment-form').submit(function (e) {
       // Show error to your customer (e.g., insufficient funds)
       alert(result.error.message)
       // Remove loading state from button
-      $('#lp-submit-payment').prop('disabled', false).text(footerConfig.buttonText)
+      $('#lp-submit-payment').prop('disabled', false).text('Contribute')
     } else {
       // The payment has been processed!
       if (result.paymentIntent.status === 'succeeded') {
