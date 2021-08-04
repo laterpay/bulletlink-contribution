@@ -1,6 +1,6 @@
 /* GLOBAL VARIABLES */
 
-/* global alert, Stripe, $ */
+/* global alert, fetch, Stripe */
 let clientId, creditCardInput, stripe, tabData
 
 const footerConfig = {
@@ -8,6 +8,27 @@ const footerConfig = {
   ctaText: null,
   amounts: null
 }
+
+/* DOM ELEMENTS */
+
+const Footer = document.getElementById('cto-footer')
+const CloseButton = document.getElementById('cto-close-button')
+
+const SelectAmountForm = document.getElementById('cto-amount-form')
+const UserDataForm = document.getElementById('cto-userData-form')
+const PaymentForm = document.getElementById('cto-payment-form')
+
+const PresetAmountsContainer = document.getElementById('cto-preset-amounts')
+const CustomAmountButton = document.getElementById('cto-custom-amount')
+const CustomAmountInput = document.getElementById('cto-custom-amount-input')
+const CustomAmountPlaceholder = document.getElementById('cto-custom-amount-placeholder')
+const ConfirmAmountButton = document.getElementById('cto-confirm-amount')
+
+const NameInput = document.getElementById('cto-name-input')
+const EmailInput = document.getElementById('cto-email-input')
+const StartPaymentButton = document.getElementById('cto-start-payment')
+const SubmitPaymentButton = document.getElementById('cto-submit-payment')
+const SuccessMessage = document.getElementById('cto-success')
 
 /* HELPERS */
 
@@ -46,211 +67,241 @@ const showFooter = () => {
   if (clientId && footerConfig) {
     // Set up the footer based on the returned data object.
     if (footerConfig.ctaHeader) {
-      $('#cto-cta-title').text(footerConfig.ctaHeader)
+      const el = document.querySelector('#cto-cta-title')
+      el.textContent = footerConfig.ctaHeader
     }
     if (footerConfig.ctaText) {
-      $('#cto-cta-text').text(footerConfig.ctaText)
+      const el = document.querySelector('#cto-cta-text')
+      el.textContent = footerConfig.ctaText
     }
     if (footerConfig.amounts) {
       for (var i = 0; i < 4; i++) {
-        $(`[for=cto-amount-${i + 1}]`).text('$' + footerConfig.amounts[i])
-        $(`#cto-amount-${i + 1}`).val(footerConfig.amounts[i] * 100)
+        const label = document.querySelector(`[for=cto-amount-${i + 1}]`)
+        label.textContent = '$' + footerConfig.amounts[i]
+        const input = document.querySelector(`#cto-amount-${i + 1}`)
+        input.value = footerConfig.amounts[i] * 100
       }
     }
-    $('#cto-footer').show()
+    Footer.style.opacity = 1
     adjustFooterHeight()
   }
 }
 
 const fetchFooterConfigFromDB = clientId => {
   // Fetch footer options for given clientId
-  $.get(
-    'https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/footers/' + clientId,
-    undefined,
-    // success callback
-    function (data) {
-      // Populate empty footerConfig fields with data from the GET request
-      Object.entries(footerConfig).forEach(([key, value]) => {
-        const pascalCaseToSnakeCase = input => input.split(/(?=[A-Z])/).join('_').toLowerCase()
-        const snakeCaseKey = pascalCaseToSnakeCase(key)
-        if (!value && data[snakeCaseKey]) {
-          footerConfig[key] = data[snakeCaseKey]
+  fetch('https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/footers/' + clientId)
+    .then(
+      function (response) {
+        if (response.status !== 200) {
+          throw new Error(response.status)
         }
+
+        // Success
+        response.json().then(function (data) {
+          // Populate empty footerConfig fields with data from the GET request
+          Object.entries(footerConfig).forEach(([key, value]) => {
+            const pascalCaseToSnakeCase = input => input.split(/(?=[A-Z])/).join('_').toLowerCase()
+            const snakeKey = pascalCaseToSnakeCase(key)
+            if (!value && data[snakeKey]) {
+              footerConfig[key] = data[snakeKey]
+            }
+          })
+          showFooter()
+        })
       })
-      showFooter()
-    })
-    .fail(function () {
-      console.error('Invalid client ID. Contributions footer will stay hidden.')
+    .catch(function (err) {
+      console.error('Invalid client ID. Contributions footer will stay hidden.', err)
     })
 }
 
 /* EVENT HANDLERS */
 
 // Hide input placeholder if the user clicks on it
-$('#cto-custom-amount-placeholder').click(function (e) {
-  $('#cto-custom-amount-placeholder').hide()
+CustomAmountPlaceholder.addEventListener('click', function (e) {
+  CustomAmountPlaceholder.style.display = 'none'
 })
 
 // Select custom amount input if the user clicks on it
-$('#cto-custom-amount').click(function () {
-  $('.cto-chooseAmount__radioInput').prop('checked', false)
-  $('#cto-custom-amount').addClass('selected')
-  $('#cto-custom-amount-input').focus()
+CustomAmountButton.addEventListener('click', function (e) {
+  const SelectedPresetAmount = document.querySelector('.cto-chooseAmount__radioInput:checked')
+  if (SelectedPresetAmount) {
+    SelectedPresetAmount.checked = false
+  }
+  CustomAmountButton.classList.add('selected')
+  CustomAmountInput.focus()
 })
 
 // Enforce min & max value for input
-$('#cto-custom-amount-input').on('input', function () {
-  const value = $(this).val()
+CustomAmountInput.addEventListener('input', function (e) {
+  const value = CustomAmountInput.value
   if ((value !== '') && (value.indexOf('.') === -1)) {
-    $(this).val(Math.max(Math.min(value, 999), 1))
+    CustomAmountInput.value = Math.max(Math.min(value, 999), 1)
   }
 })
 
 // Reset custom amount input if the user clicks a preset amount
-$('#cto-amounts').click(function () {
-  $('#cto-custom-amount').removeClass('selected')
-  $('#cto-custom-amount-input').val('')
-  $('#cto-custom-amount-placeholder').css('display', 'flex')
+PresetAmountsContainer.addEventListener('click', function (e) {
+  CustomAmountButton.classList.remove('selected')
+  CustomAmountInput.value = ''
+  CustomAmountPlaceholder.style.display = 'flex'
 })
 
 // Reset custom amount input if it is empty
-$('#cto-custom-amount-input').blur(function (e) {
-  const isEmpty = !e.target.value
+CustomAmountInput.addEventListener('blur', function (e) {
+  const isEmpty = !CustomAmountInput.value
   if (isEmpty) {
-    $('#cto-custom-amount').removeClass('selected')
-    $('#cto-custom-amount-placeholder').css('display', 'flex')
-    $('#cto-amount-1').prop('checked', true)
+    CustomAmountButton.classList.remove('selected')
+    CustomAmountPlaceholder.style.display = 'flex'
+    const SelectedPresetAmount = document.querySelector('#cto-amount-1')
+    SelectedPresetAmount.checked = true
   }
 })
 
 // Close the footer if the user clicks on the X
-$('#cto-close-button').click(function () {
-  $('#cto-footer').hide()
+CloseButton.addEventListener('click', function (e) {
+  Footer.style.display = 'none'
   window.parent.postMessage({ ctoFooterDismissed: true }, '*')
 })
 
 // What happens when the user confirms the contribution amount
-$('#cto-confirm-amount').click(function (e) {
+ConfirmAmountButton.addEventListener('click', function (e) {
   e.preventDefault()
-  // Display optionsGroup (in case it's hidden)
-  $('.cto-chooseAmount__optionsGroup').css('display', 'flex')
+  // Display OptionsGroup (in case it's hidden)
+  const OptionsGroup = document.querySelector('.cto-chooseAmount__optionsGroup')
+  OptionsGroup.style.display = 'flex'
   // Make footer full-page
-  $('#cto-footer').css('min-height', '100vh')
-  $('#cto-confirm-amount').hide()
+  Footer.style.minHeight = '100vh'
   adjustFooterHeight('100vh')
   setTimeout(function () {
-    $('#cto-footer-bottom').css('display', 'flex')
-    $('#cto-name-input').focus()
+    const BottomSection = document.querySelector('#cto-footer-bottom')
+    BottomSection.style.display = 'flex'
+    ConfirmAmountButton.style.display = 'none'
+    NameInput.focus()
   }, 200)
 })
 
 // What happens when the user starts the payment process
-$('#cto-userData-form').submit(function (e) {
+UserDataForm.addEventListener('submit', function (e) {
   e.preventDefault()
 
   // Add loading state to button
-  $('#cto-start-payment').prop('disabled', true).text('Processing...')
+  StartPaymentButton.disabled = true
+  StartPaymentButton.textContent = 'Processing...'
 
   // Calculate amount
   let amount
-  const isCustomAmountSelected = !!$('#cto-custom-amount.selected').length
+  const isCustomAmountSelected = !!CustomAmountButton.classList.contains('selected')
   if (isCustomAmountSelected) {
-    amount = $('#cto-custom-amount-input').val().replace('$', '')
+    amount = CustomAmountInput.value.replace('$', '')
     amount = parseFloat(amount) * 100
   } else {
-    amount = $('input[name="amount"]:checked').val().replace('$', '')
+    const SelectedAmountInput = document.querySelector('input[name="amount"]:checked')
+    amount = SelectedAmountInput.value.replace('$', '')
     amount = parseInt(amount)
   }
   if (amount < 100 || isNaN(amount)) {
     amount = 100 // minimum contribution $1
   }
-
-  // Prepare data for AJAX request
+  // Populate tabData object
   tabData = {
     amount,
-    name: $('#cto-name-input').val(),
-    email: $('#cto-email-input').val()
+    name: NameInput.value,
+    email: EmailInput.value
   }
 
+  // Prepare data for AJAX request
+  const requestBody = new URLSearchParams()
+  requestBody.append('amount', amount)
+  requestBody.append('client_id', clientId)
+  requestBody.append('user_email', tabData.email)
+  requestBody.append('user_name', tabData.name)
+
   // Make request to Tapper API
-  $.post(
-    'https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/contribute', // 'https://tapper-contribution-endpoint.vercel.app/api/start-payment',
-    {
-      amount,
-      client_id: clientId,
-      user_email: $('#cto-email-input').val(),
-      user_name: $('#cto-name-input').val()
-    },
-    // success callback
-    function (data) {
-      tabData.clientSecret = data.client_secret
-      tabData.publishableKey = data.publishable_key
-
-      console.log('Reponse from Tapper API', data)
-
-      // Show payment form
-      $('#cto-amount-form').hide()
-      $('#cto-userData-form').hide()
-      $('#cto-payment-form').css('display', 'flex')
-      $('#cto-selected-amount').text('$' + amount / 100)
-
-      // Initialize Stripe Elements
-      stripe = Stripe(tabData.publishableKey)
-
-      // Create payment request (Apple Pay)
-      const paymentRequest = stripe.paymentRequest({
-        country: 'US',
-        currency: 'usd',
-        total: {
-          label: 'Demo total',
-          amount
-        }
-        // requestPayerName: true,
-        // requestPayerEmail: true,
-      })
-
-      const elements = stripe.elements()
-      const style = {
-        base: {
-          color: '#111',
-          fontSize: '18px'
-        }
-      }
-
-      // Mount Payment Request Button
-      const prButton = elements.create('paymentRequestButton', {
-        paymentRequest
-      });
-      (async () => {
-        // Check the availability of the Payment Request API first.
-        const result = await paymentRequest.canMakePayment()
-        if (result) {
-          prButton.mount('#payment-request-button')
-        } else {
-          document.getElementById('payment-request-button').style.display = 'none'
-        }
-      })()
-
-      // Mount credit card input
-      creditCardInput = elements.create('card', { style: style })
-      creditCardInput.mount('#card-element')
-      setTimeout(function () {
-        creditCardInput.focus()
-      }, 200)
-    })
-    .fail(function () {
-      alert('An error occurred')
-      // Remove loading state from button
-      $('#cto-start-payment').prop('disabled', false).text('Pay by card')
-    })
-
   console.log('Request to Tapper API', tabData)
+  fetch('https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/contribute', {
+    method: 'post',
+    body: requestBody
+  })
+    .then(
+      function (response) {
+        if (response.status !== 200) {
+          console.log('Looks like there was a problem. Status Code: ' + response.status)
+          return
+        }
+
+        // Success
+        response.json().then(function (data) {
+          console.log('Reponse from Tapper API', data)
+
+          tabData.clientSecret = data.client_secret
+          tabData.publishableKey = data.publishable_key
+
+          // Show payment form
+          SelectAmountForm.style.display = 'none'
+          UserDataForm.style.display = 'none'
+          PaymentForm.style.display = 'flex'
+          const SelectedAmountText = document.getElementById('cto-selected-amount')
+          SelectedAmountText.textContent = '$' + amount / 100
+
+          // Initialize Stripe Elements
+          stripe = Stripe(tabData.publishableKey)
+
+          // Create payment request (Apple Pay)
+          const paymentRequest = stripe.paymentRequest({
+            country: 'US',
+            currency: 'usd',
+            total: {
+              label: 'Demo total',
+              amount
+            }
+            // requestPayerName: true,
+            // requestPayerEmail: true,
+          })
+
+          const elements = stripe.elements()
+          const style = {
+            base: {
+              color: '#111',
+              fontSize: '18px'
+            }
+          }
+
+          // Mount Payment Request Button
+          const prButton = elements.create('paymentRequestButton', {
+            paymentRequest
+          });
+          (async () => {
+            // Check the availability of the Payment Request API first.
+            const result = await paymentRequest.canMakePayment()
+            if (result) {
+              prButton.mount('#payment-request-button')
+            } else {
+              document.getElementById('payment-request-button').style.display = 'none'
+            }
+          })()
+
+          // Mount credit card input
+          creditCardInput = elements.create('card', { style: style })
+          creditCardInput.mount('#card-element')
+          setTimeout(function () {
+            creditCardInput.focus()
+          }, 200)
+        })
+      })
+    .catch(function (err) {
+      alert('An error occurred')
+      console.log('Fetch Error', err)
+      // Remove loading state from button
+      StartPaymentButton.disabled = false
+      StartPaymentButton.textContent = 'Pay by card'
+    })
 })
 
 // What happens when the user confirms the payment
-$('#cto-payment-form').submit(function (e) {
+PaymentForm.addEventListener('submit', function (e) {
   e.preventDefault()
-  $('#cto-submit-payment').prop('disabled', true).text('Processing...')
+  SubmitPaymentButton.disabled = true
+  SubmitPaymentButton.textContent = 'Processing...'
 
   stripe.confirmCardPayment(
     tabData.clientSecret,
@@ -269,18 +320,19 @@ $('#cto-payment-form').submit(function (e) {
       // Show error to your customer (e.g., insufficient funds)
       alert(result.error.message)
       // Remove loading state from button
-      $('#cto-submit-payment').prop('disabled', false).text('Contribute')
+      SubmitPaymentButton.disabled = false
+      SubmitPaymentButton.textContent = 'Contribute'
     } else {
       // The payment has been processed!
       if (result.paymentIntent.status === 'succeeded') {
         // Show success message
-        $('#cto-payment-form').hide()
-        $('#cto-success').show()
+        PaymentForm.style.display = 'none'
+        SuccessMessage.style.display = 'block'
         window.parent.postMessage({ ctoContributionMade: true }, '*')
 
         // Automatically close footer after 3 seconds
         setTimeout(function () {
-          $('#cto-footer').fadeOut()
+          Footer.style.opacity = 0
         }, 3000)
       }
     }

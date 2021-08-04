@@ -10,6 +10,7 @@
         display: flex;
         align-items: flex-end;
       }
+
       .cto-footer * {
         box-sizing: border-box;
         font-family: "Helvetica Neue", sans-serif;
@@ -21,14 +22,14 @@
       .cto-footer {
         position: relative;
         background-color: #FFF;
-        display: none;
         border-top: #602576 2px solid;
         color: #111;
         font-size: 1.25rem;
         width: 100%;
         padding: 1.25rem 1rem;
         min-height: 0; /* must have an explicit value for the transition below to work */
-        transition: min-height .5s ease-in-out;
+        opacity: 0;
+        transition: min-height .5s ease-in-out, opacity .4s ease-in-out;
         overflow-y: scroll;
       }
 
@@ -420,7 +421,7 @@
       </div>
       <form action="#" class="cto-chooseAmount__form" id="cto-amount-form"> 
         <div class="cto-chooseAmount__optionsGroup">
-          <div class="cto-chooseAmount__presetAmounts" id="cto-amounts">
+          <div class="cto-chooseAmount__presetAmounts" id="cto-preset-amounts">
             <input type="radio" name="amount" id="cto-amount-1" class="cto-chooseAmount__radioInput" value="100" checked>
             <label for="cto-amount-1" id="cto-amount-label-1" class="cto-chooseAmount__option">$1</label>
             <input type="radio" name="amount" id="cto-amount-2"class="cto-chooseAmount__radioInput" value="200" >
@@ -488,12 +489,11 @@
           Thank you for your support.
         </h4>
         <div class="cto-success__info">
-          This screen will automatically close in 3 seconds.
+          This overlay will automatically close after 3 seconds.
         </div>
       </div>
     </div>
   </div>
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <script src="footer.js"></script>
   </body>
