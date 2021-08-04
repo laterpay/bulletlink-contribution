@@ -217,7 +217,7 @@ UserDataForm.addEventListener('submit', function (e) {
   requestBody.append('user_name', tabData.name)
 
   // Make request to Tapper API
-  console.log('Request to Tapper API', tabData)
+  // console.log('Request to Tapper API', tabData)
   fetch('https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/contribute', {
     method: 'post',
     body: requestBody
@@ -231,7 +231,7 @@ UserDataForm.addEventListener('submit', function (e) {
 
         // Success
         response.json().then(function (data) {
-          console.log('Reponse from Tapper API', data)
+          // console.log('Reponse from Tapper API', data)
 
           tabData.clientSecret = data.client_secret
           tabData.publishableKey = data.publishable_key
