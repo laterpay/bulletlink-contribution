@@ -5,8 +5,8 @@
 (function () {
   // Check browser support for Web Storage
   var browserSupportsWebStorage = typeof Storage !== 'undefined'
-  var footerDismissed = sessionStorage.lp_footer_dismissed
-  var lastContributionAt = localStorage.lp_last_contribution_at
+  var footerDismissed = sessionStorage.cto_footer_dismissed
+  var lastContributionAt = localStorage.cto_last_contribution_at
 
   if (browserSupportsWebStorage && (footerDismissed || lastContributionAt)) {
     const alert = document.getElementById('demo-alert')
@@ -22,8 +22,8 @@
         day: '2-digit', // "01"
         year: 'numeric' // "2019"
       })
-      alert.innerHTML = `You made a contribution on ${localizedDate}. The footer will be hidden for 30 days.<br/>
-      Delete <code>localStorage.lp_last_contribution_at</code> to show the footer again.`
+      alert.innerHTML = `You made a contribution on ${localizedDate}. The footer will remain hidden.<br/>
+      Delete <code>localStorage.cto_last_contribution_at</code> to display the footer again.`
     }
 
     // Add element to DOM

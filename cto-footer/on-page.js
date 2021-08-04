@@ -18,11 +18,11 @@ const shouldShowFooter = (function () {
   if (!browserSupportsWebStorage) {
     return false
   }
-  const dismissed = !!sessionStorage.lp_footer_dismissed
+  const dismissed = !!sessionStorage.cto_footer_dismissed
   const day = 60 * 60 * 24 * 1000
   const month = day * 30
   const monthAgo = Date.now() - month
-  const lastContributionAt = parseInt(localStorage.lp_last_contribution_at)
+  const lastContributionAt = parseInt(localStorage.cto_last_contribution_at)
   const contributedThisMonth = lastContributionAt && lastContributionAt > monthAgo
   /*
   The footer will stay hidden if...
@@ -72,12 +72,12 @@ if (shouldShowFooter) {
   }
 
   const setFooterDismissed = () => {
-    sessionStorage.lp_footer_dismissed = 1
+    sessionStorage.cto_footer_dismissed = 1
     iframe.style.display = 'none'
   }
 
   const setLastContribution = () => {
     // Save timestamp in local storage
-    localStorage.lp_last_contribution_at = Date.now()
+    localStorage.cto_last_contribution_at = Date.now()
   }
 }
