@@ -1,9 +1,404 @@
 <html>
   <head>
     <title>Contributions Footer</title>
-    <link rel="stylesheet" href="footer.css">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      /* Footer */
+      body {
+        margin: 0;
+        display: flex;
+        align-items: flex-end;
+      }
+      .lp-footer * {
+        box-sizing: border-box;
+        font-family: "Helvetica Neue", sans-serif;
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .lp-footer {
+        position: relative;
+        background-color: #FFF;
+        display: none;
+        border-top: #602576 2px solid;
+        color: #111;
+        font-size: 1.25rem;
+        width: 100%;
+        padding: 1.25rem 1rem;
+        min-height: 0; /* must have an explicit value for the transition below to work */
+        transition: min-height .5s ease-in-out;
+        overflow-y: scroll;
+      }
+
+      .lp-footer__top {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .lp-footer__bottom {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 34rem;
+        margin: 0 auto;
+        padding-top: 1rem;
+        padding-bottom: 1.25rem;
+      }
+
+
+      /* CTA */
+
+      .lp-cta {
+        color: #333;
+        width: 40rem;
+        max-width: 100%;
+        margin: 0 auto;
+        text-align: center;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
+
+      .lp-cta__heading {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 0;
+      }
+
+      .lp-cta__text {
+        font-size: 1.125rem;
+        line-height: 1.5;
+      }
+
+
+      /* Buttons */
+
+      .lp-button {
+        display: flex;
+        align-items: center;
+        background-color: #602576;
+        border-radius: .5rem;
+        border: none;
+        color: white;
+        height: 3rem;
+        padding: 0 1.5rem;
+        cursor: pointer;
+        transition: background-color .2s;
+      }
+
+      .lp-button:hover {
+        background-color: #541b67;
+      }
+
+      .lp-button:disabled {
+        opacity: .5;
+        cursor: progress;
+      }
+
+      .lp-button__icon {
+        margin-right: 1rem;
+      }
+
+      .lp-button__label {
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1;
+      }
+
+      .lp-button--amount {
+        border-radius: 2rem;
+        margin-left: 1.5rem;
+        padding-right: 2rem;
+      }
+
+      .lp-button--form {
+        height: 3.5rem;
+        margin-top: 1.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        justify-content: center;
+      }
+
+
+      /* Forms */
+
+      .lp-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: #F4EFF5;
+        border: #E8DFEC 1px solid;
+        border-radius: .75rem;
+        padding: 1.25rem 2rem 2rem;
+        width: 100%;
+      }
+
+      .lp-form--payment {
+        display: none;
+      }
+
+      .lp-form__input,
+      .lp-form > #card-element {
+        background-color: white;
+        border: #ddd 1px solid;
+        border-radius: .5rem;
+        box-sizing: border-box;
+        font-size: 1.125rem;
+        height: 3.25rem;
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+
+      .lp-form__input:focus,
+      .StripeElement--focus {
+        border-color: #A4CAFE !important;
+        box-shadow: 0 0 0 3px rgba(164, 202, 254, 0.45);
+        outline: 0;
+      }
+
+
+      /* Choose amount */
+
+      .lp-chooseAmount__form {
+        display: flex;
+      }
+
+      .lp-chooseAmount__optionsGroup {
+        display: flex;
+        align-items: center;
+      }
+
+      .lp-chooseAmount__presetAmounts {
+        display: flex;
+      }
+
+      .lp-chooseAmount__radioInput {
+        display: none;
+      }
+
+      .lp-chooseAmount__option {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: #602576 1px solid;
+        border-radius: 2rem;
+        color: #602576;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1;
+        cursor: pointer;
+        height: 3rem;
+        min-width: 5rem;
+        margin-right: 1rem;
+        padding: 0 1.5rem;
+      }
+
+      .lp-chooseAmount__option:hover,
+      .lp-chooseAmount__radioInput:checked + label,
+      .lp-chooseAmount__option.selected {
+        background-color: #602576;
+        color: white;
+      }
+
+
+      /* Currency Input */
+
+      .lp-currencyInput {
+        display: flex;
+        justify-content: center;
+        flex-grow: 1;
+        padding: 0 1.5rem;
+        position: relative;
+        cursor: text;
+      }
+
+      .lp-currencyInput__label {
+        cursor: text;
+      }
+
+      .lp-currencyInput__input {
+        background-color: transparent;
+        color: white;
+        font-size: unset;
+        font-weight: bold;
+        display: inline-block;
+        height: 100%;
+        width: 100%;
+        border: 0;
+        width: 3rem;
+        outline: none;
+        text-align: center;
+        padding-bottom: 2px;
+      }
+
+      /* Hide number input arrows */
+      /* Chrome, Safari, Edge, Opera */
+      .lp-currencyInput__input::-webkit-outer-spin-button,
+      .lp-currencyInput__input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      /* Firefox */
+      .lp-currencyInput__input[type=number] {
+        -moz-appearance: textfield;
+      }
+
+      .lp-currencyInput__input:focus::before {
+        content: "$"
+      }
+
+      .lp-currencyInput__placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        border-radius: 2rem;
+        color: #602576;
+        font-size: 1rem;
+        font-weight: 700;
+        height: 100%;
+        width: 100%;
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: 0 auto;
+      }
+
+      .lp-currencyInput__placeholder:hover {
+        background-color: #602576;
+        color: white;
+      }
+
+      .lp-chooseAmount__option,
+      .lp-currencyInput__placeholder {
+        transition: color .2s;
+      }
+
+
+      /* Selected amount */
+
+      .lp-selectedAmount {
+        margin: 0 auto;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      .lp-selectedAmount__largeNumber {
+        color: #2D3748;
+        font-size: 2.5rem;
+        font-weight: bold;
+      }
+
+      .lp-selectedAmount__smallText {
+        color: #988CA1;
+        font-size: .8125rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: .25rem;
+      }
+
+      .lp-success__container {
+        display: none;
+        background-color: white;
+        border-radius: .75rem;
+        padding: 3rem 1rem 4rem;
+        width: 100%;
+        text-align: center;
+      }
+
+      .lp-success__icon {
+        font-size: 2.5rem;
+      }
+
+      .lp-success__heading {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 0;
+        padding: 1rem 0 .5rem;
+      }
+
+      .lp-success__info {
+        color: #777;
+        font-size: 1rem;
+      }
+
+
+      /* Close button */
+
+      .lp-closeButton {
+        color: #b1bccc;
+        height: 1.25rem;
+        width: 1.25rem;
+        cursor: pointer;
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        transition: color .2s;
+      }
+
+      .lp-closeButton:hover {
+        color: #4A5568;
+      }
+
+      @media only screen and (max-width: 768px) {
+        .lp-footer {
+          padding-top: 2rem;
+        }
+
+        .lp-chooseAmount__optionsGroup {
+          display: none;
+          flex-direction: column;
+        }
+
+        .lp-chooseAmount__option:last-child {
+          margin-right: 0;
+        }
+
+        .lp-chooseAmount__option.lp-currencyInput {
+          margin-top: 1.5rem;
+          margin-right: 0;
+          width: 100%;
+        }
+
+        .lp-button--amount {
+          margin-left: 0;
+        }
+      }
+
+      @media only screen and (max-width: 480px) {
+        .lp-chooseAmount__optionsGroup {
+          width: 14rem;
+        }
+
+        .lp-chooseAmount__presetAmounts {
+          flex-direction: column;
+          width: 100%;
+        }
+        
+        .lp-chooseAmount__option {
+          margin-bottom: 1.5rem;
+          margin-right: 0;
+          width: 100%;
+        }
+
+        .lp-chooseAmount__option.lp-currencyInput {
+          margin-top: 0;
+        }
+
+        .lp-form {
+          padding: 0.75rem 1.5rem 1.5rem
+        }
+      }
+    </style>
   </head>
 <body>
   <div class="lp-footer" id="lp-footer">
