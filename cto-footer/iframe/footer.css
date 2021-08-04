@@ -1,17 +1,24 @@
 /* Footer */
-
+body {
+  margin: 0;
+  display: flex;
+  align-items: flex-end;
+}
 .lp-footer * {
   box-sizing: border-box;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .lp-footer {
   position: relative;
-  background-color: #EDF2F7;
+  background-color: #FFF;
   display: none;
-  box-sizing: border-box;
-  border-top: gray 4px solid;
+  border-top: #602576 2px solid;
   color: #111;
-  font-size: 20px;
+  font-size: 1.25rem;
   width: 100%;
   padding: 1.25rem 1rem;
   min-height: 0; /* must have an explicit value for the transition below to work */
@@ -53,13 +60,11 @@
 .lp-cta__heading {
   font-size: 1.5rem;
   font-weight: bold;
-  letter-spacing: 1px;
   margin: 0;
-  text-transform: uppercase;
 }
 
 .lp-cta__text {
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1.5;
 }
 
@@ -67,22 +72,20 @@
 /* Buttons */
 
 .lp-button {
-  background-color: #333;
+  display: flex;
+  align-items: center;
+  background-color: #602576;
   border-radius: .5rem;
   border: none;
   color: white;
-  height: 4rem;
-  font-size: .875rem;
-  font-weight: bold;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 0 2rem;
+  height: 3rem;
+  padding: 0 1.5rem;
   cursor: pointer;
   transition: background-color .2s;
 }
 
 .lp-button:hover {
-  background-color: #222;
+  background-color: #541b67;
 }
 
 .lp-button:disabled {
@@ -90,13 +93,28 @@
   cursor: progress;
 }
 
+.lp-button__icon {
+  margin-right: 1rem;
+}
+
+.lp-button__label {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
 .lp-button--amount {
+  border-radius: 2rem;
   margin-left: 1.5rem;
+  padding-right: 2rem;
 }
 
 .lp-button--form {
   height: 3.5rem;
   margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  justify-content: center;
 }
 
 
@@ -106,10 +124,10 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: white;
+  background-color: #F4EFF5;
+  border: #E8DFEC 1px solid;
   border-radius: .75rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  padding: 1rem 2rem 2rem;
+  padding: 1.25rem 2rem 2rem;
   width: 100%;
 }
 
@@ -119,6 +137,7 @@
 
 .lp-form__input,
 .lp-form > #card-element {
+  background-color: white;
   border: #ddd 1px solid;
   border-radius: .5rem;
   box-sizing: border-box;
@@ -145,12 +164,6 @@
 .lp-chooseAmount__optionsGroup {
   display: flex;
   align-items: center;
-  background-color: white;
-  border: #E2E8F0 1px solid;
-  border-radius: .5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  width: 34rem;
-  overflow: hidden;
 }
 
 .lp-chooseAmount__presetAmounts {
@@ -165,33 +178,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-right: #EDF2F7 2px solid;
-  color: #777;
-  font-size: 1.375rem;
-  font-weight: bold;
+  border: #602576 1px solid;
+  border-radius: 2rem;
+  color: #602576;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
   cursor: pointer;
-  height: 4rem;
-  min-width: 5.5rem;
+  height: 3rem;
+  min-width: 5rem;
+  margin-right: 1rem;
   padding: 0 1.5rem;
 }
 
+.lp-chooseAmount__option:hover,
 .lp-chooseAmount__radioInput:checked + label,
 .lp-chooseAmount__option.selected {
-  color: #111;
-  position: relative;
-}
-
-.lp-chooseAmount__radioInput:checked + label:after {
-  content: "";
-  display: inline;
-  height: 4px;
-  width: 3rem;
-  position: absolute;
-  bottom: .85rem;
-  background-color: hsl(40, 100%, 50%);
-  opacity: .85;
-  border-radius: .5rem 1rem;
-  transform: rotate(-1deg);
+  background-color: #602576;
+  color: white;
 }
 
 
@@ -200,7 +204,6 @@
 .lp-currencyInput {
   display: flex;
   justify-content: center;
-  border-right: none;
   flex-grow: 1;
   padding: 0 1.5rem;
   position: relative;
@@ -212,7 +215,8 @@
 }
 
 .lp-currencyInput__input {
-  background: 0;
+  background-color: transparent;
+  color: white;
   font-size: unset;
   font-weight: bold;
   display: inline-block;
@@ -222,6 +226,7 @@
   width: 3rem;
   outline: none;
   text-align: center;
+  padding-bottom: 2px;
 }
 
 /* Hide number input arrows */
@@ -245,9 +250,10 @@
   align-items: center;
   justify-content: center;
   background-color: white;
-  color: #999;
-  font-size: 1.125rem;
-  font-weight: normal;
+  border-radius: 2rem;
+  color: #602576;
+  font-size: 1rem;
+  font-weight: 700;
   height: 100%;
   width: 100%;
   cursor: pointer;
@@ -259,14 +265,14 @@
   margin: 0 auto;
 }
 
+.lp-currencyInput__placeholder:hover {
+  background-color: #602576;
+  color: white;
+}
+
 .lp-chooseAmount__option,
 .lp-currencyInput__placeholder {
   transition: color .2s;
-}
-
-.lp-chooseAmount__option:hover,
-.lp-currencyInput__placeholder:hover {
-  color: #333;
 }
 
 
@@ -285,7 +291,7 @@
 }
 
 .lp-selectedAmount__smallText {
-  color: #A0AEC0;
+  color: #988CA1;
   font-size: .8125rem;
   font-weight: bold;
   letter-spacing: 1px;
@@ -297,7 +303,6 @@
   display: none;
   background-color: white;
   border-radius: .75rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),0 2px 4px -1px rgba(0, 0, 0, 0.06);
   padding: 3rem 1rem 4rem;
   width: 100%;
   text-align: center;
@@ -321,29 +326,10 @@
 }
 
 
-/* Powered by */
-
-.lp-poweredBy {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 1rem 0;
-  font-size: .9375rem;
-  font-weight: 500;
-  color: #718096;
-  text-decoration: none;
-}
-
-.lp-poweredBy > svg {
-  height: 1.25rem;
-  margin-left: .5rem;
-}
-
-
 /* Close button */
 
 .lp-closeButton {
-  color: #718096;
+  color: #b1bccc;
   height: 1.25rem;
   width: 1.25rem;
   cursor: pointer;
@@ -359,37 +345,50 @@
 
 @media only screen and (max-width: 768px) {
   .lp-footer {
-    padding-top: 3rem;
+    padding-top: 2rem;
   }
 
+  .lp-chooseAmount__optionsGroup {
+    display: none;
+    flex-direction: column;
+  }
+
+  .lp-chooseAmount__option:last-child {
+    margin-right: 0;
+  }
+
+  .lp-chooseAmount__option.lp-currencyInput {
+    margin-top: 1.5rem;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .lp-button--amount {
+    margin-left: 0;
+  }
+}
+
+@media only screen and (max-width: 480px) {
   .lp-chooseAmount__optionsGroup {
     width: 14rem;
   }
 
   .lp-chooseAmount__presetAmounts {
-    display: none;
-  }
-}
-
-@media only screen and (max-width: 480px) {
-  .lp-chooseAmount__form {
     flex-direction: column;
     width: 100%;
   }
-
-  .lp-chooseAmount__optionsGroup {
+  
+  .lp-chooseAmount__option {
+    margin-bottom: 1.5rem;
+    margin-right: 0;
     width: 100%;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
   }
 
-  .lp-chooseAmount__presetAmounts {
-    display: none;
+  .lp-chooseAmount__option.lp-currencyInput {
+    margin-top: 0;
   }
 
-  .lp-button--amount {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    margin-left: 0;
+  .lp-form {
+    padding: 0.75rem 1.5rem 1.5rem
   }
 }

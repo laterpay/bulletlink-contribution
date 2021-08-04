@@ -1,4 +1,4 @@
-/* GLOBAL VARS */
+/* GLOBAL VARIABLES */
 
 /* global alert, Stripe, $ */
 let clientId, creditCardInput, stripe, tabData
@@ -27,7 +27,7 @@ window.onresize = () => adjustFooterHeight()
 window.onmessage = ({ data }) => {
   if (data.clientId) {
     clientId = data.clientId
-    console.log(clientId)
+    // console.log(clientId)
     Object.keys(footerConfig).forEach(key => {
       // Replace footerConfig defaults if a corresponding data attribute exists
       if (data[key]) footerConfig[key] = data[key]
@@ -59,16 +59,16 @@ const showFooter = () => {
         $(`#lp-amount-${i + 1}`).val(footerConfig.amounts[i] * 100)
       }
     }
-    if (footerConfig.customAmountText) {
-      $('#lp-custom-amount-placeholder').text(footerConfig.customAmountText)
-    }
-    if (footerConfig.buttonText) {
-      $('#lp-confirm-amount').text(footerConfig.buttonText)
-      $('#lp-submit-payment').text(footerConfig.buttonText)
-    }
-    if (footerConfig.highlightColor && footerConfig.highlightColor.startsWith('#')) {
-      $('#lp-footer').css('border-color', footerConfig.highlightColor)
-    }
+    // if (footerConfig.customAmountText) {
+    //   $('#lp-custom-amount-placeholder').text(footerConfig.customAmountText)
+    // }
+    // if (footerConfig.buttonText) {
+    //   $('#lp-confirm-amount').text(footerConfig.buttonText)
+    //   $('#lp-submit-payment').text(footerConfig.buttonText)
+    // }
+    // if (footerConfig.highlightColor && footerConfig.highlightColor.startsWith('#')) {
+    //   $('#lp-footer').css('border-color', footerConfig.highlightColor)
+    // }
     $('#lp-footer').show()
     adjustFooterHeight()
   }
@@ -144,6 +144,8 @@ $('#lp-close-button').click(function () {
 // What happens when the user confirms the contribution amount
 $('#lp-confirm-amount').click(function (e) {
   e.preventDefault()
+  // Display optionsGroup (in case it's hidden)
+  $('.lp-chooseAmount__optionsGroup').css('display', 'flex')
   // Make footer full-page
   $('#lp-footer').css('min-height', '100vh')
   $('#lp-confirm-amount').hide()
@@ -159,7 +161,7 @@ $('#lp-userData-form').submit(function (e) {
   e.preventDefault()
 
   // Add loading state to button
-  $('#lp-start-payment').prop('disabled', true).text('Loading...')
+  $('#lp-start-payment').prop('disabled', true).text('Processing...')
 
   // Calculate amount
   let amount
@@ -260,7 +262,7 @@ $('#lp-userData-form').submit(function (e) {
 // What happens when the user confirms the payment
 $('#lp-payment-form').submit(function (e) {
   e.preventDefault()
-  $('#lp-submit-payment').prop('disabled', true).text('Loading...')
+  $('#lp-submit-payment').prop('disabled', true).text('Processing...')
 
   stripe.confirmCardPayment(
     tabData.clientSecret,
