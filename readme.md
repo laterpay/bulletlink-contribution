@@ -15,8 +15,6 @@ Just add the following script tag to your site:
     data-client-id="client.5c8ead95-9fff-48ca-ae87-53f5d3d3429e"
     data-cta-header="ABC needs your support"
     data-cta-text="We are working hard to bring you news that matters. Your contribution will help us continue to provide vital coverage during these important times."
-    data-custom-amount-text="Custom amount"
-    data-button-text="Contribute"
     data-amounts="4,8,10,15"
   >
   </script>
