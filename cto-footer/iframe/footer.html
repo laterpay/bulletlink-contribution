@@ -10,7 +10,7 @@
         display: flex;
         align-items: flex-end;
       }
-      .lp-footer * {
+      .cto-footer * {
         box-sizing: border-box;
         font-family: "Helvetica Neue", sans-serif;
         font-size: 16px;
@@ -18,7 +18,7 @@
         -moz-osx-font-smoothing: grayscale;
       }
 
-      .lp-footer {
+      .cto-footer {
         position: relative;
         background-color: #FFF;
         display: none;
@@ -32,14 +32,14 @@
         overflow-y: scroll;
       }
 
-      .lp-footer__top {
+      .cto-footer__top {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
       }
 
-      .lp-footer__bottom {
+      .cto-footer__bottom {
         display: none;
         flex-direction: column;
         align-items: center;
@@ -53,7 +53,7 @@
 
       /* CTA */
 
-      .lp-cta {
+      .cto-cta {
         color: #333;
         width: 40rem;
         max-width: 100%;
@@ -63,13 +63,13 @@
         padding-bottom: 1rem;
       }
 
-      .lp-cta__heading {
+      .cto-cta__heading {
         font-size: 1.5rem;
         font-weight: bold;
         margin: 0;
       }
 
-      .lp-cta__text {
+      .cto-cta__text {
         font-size: 1.125rem;
         line-height: 1.5;
       }
@@ -77,7 +77,7 @@
 
       /* Buttons */
 
-      .lp-button {
+      .cto-button {
         display: flex;
         align-items: center;
         background-color: #602576;
@@ -90,32 +90,32 @@
         transition: background-color .2s;
       }
 
-      .lp-button:hover {
+      .cto-button:hover {
         background-color: #541b67;
       }
 
-      .lp-button:disabled {
+      .cto-button:disabled {
         opacity: .5;
         cursor: progress;
       }
 
-      .lp-button__icon {
+      .cto-button__icon {
         margin-right: 1rem;
       }
 
-      .lp-button__label {
+      .cto-button__label {
         font-size: 1rem;
         font-weight: 500;
         line-height: 1;
       }
 
-      .lp-button--amount {
+      .cto-button--amount {
         border-radius: 2rem;
         margin-left: 1.5rem;
         padding-right: 2rem;
       }
 
-      .lp-button--form {
+      .cto-button--form {
         height: 3.5rem;
         margin-top: 1.5rem;
         font-size: 1rem;
@@ -126,7 +126,7 @@
 
       /* Forms */
 
-      .lp-form {
+      .cto-form {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -137,12 +137,12 @@
         width: 100%;
       }
 
-      .lp-form--payment {
+      .cto-form--payment {
         display: none;
       }
 
-      .lp-form__input,
-      .lp-form > #card-element {
+      .cto-form__input,
+      .cto-form > #card-element {
         background-color: white;
         border: #ddd 1px solid;
         border-radius: .5rem;
@@ -153,7 +153,7 @@
         margin-top: 1rem;
       }
 
-      .lp-form__input:focus,
+      .cto-form__input:focus,
       .StripeElement--focus {
         border-color: #A4CAFE !important;
         box-shadow: 0 0 0 3px rgba(164, 202, 254, 0.45);
@@ -163,24 +163,24 @@
 
       /* Choose amount */
 
-      .lp-chooseAmount__form {
+      .cto-chooseAmount__form {
         display: flex;
       }
 
-      .lp-chooseAmount__optionsGroup {
+      .cto-chooseAmount__optionsGroup {
         display: flex;
         align-items: center;
       }
 
-      .lp-chooseAmount__presetAmounts {
+      .cto-chooseAmount__presetAmounts {
         display: flex;
       }
 
-      .lp-chooseAmount__radioInput {
+      .cto-chooseAmount__radioInput {
         display: none;
       }
 
-      .lp-chooseAmount__option {
+      .cto-chooseAmount__option {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -197,9 +197,9 @@
         padding: 0 1.5rem;
       }
 
-      .lp-chooseAmount__option:hover,
-      .lp-chooseAmount__radioInput:checked + label,
-      .lp-chooseAmount__option.selected {
+      .cto-chooseAmount__option:hover,
+      .cto-chooseAmount__radioInput:checked + label,
+      .cto-chooseAmount__option.selected {
         background-color: #602576;
         color: white;
       }
@@ -207,7 +207,7 @@
 
       /* Currency Input */
 
-      .lp-currencyInput {
+      .cto-currencyInput {
         display: flex;
         justify-content: center;
         flex-grow: 1;
@@ -216,11 +216,11 @@
         cursor: text;
       }
 
-      .lp-currencyInput__label {
+      .cto-currencyInput__label {
         cursor: text;
       }
 
-      .lp-currencyInput__input {
+      .cto-currencyInput__input {
         background-color: transparent;
         color: white;
         font-size: unset;
@@ -237,21 +237,21 @@
 
       /* Hide number input arrows */
       /* Chrome, Safari, Edge, Opera */
-      .lp-currencyInput__input::-webkit-outer-spin-button,
-      .lp-currencyInput__input::-webkit-inner-spin-button {
+      .cto-currencyInput__input::-webkit-outer-spin-button,
+      .cto-currencyInput__input::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
       }
       /* Firefox */
-      .lp-currencyInput__input[type=number] {
+      .cto-currencyInput__input[type=number] {
         -moz-appearance: textfield;
       }
 
-      .lp-currencyInput__input:focus::before {
+      .cto-currencyInput__input:focus::before {
         content: "$"
       }
 
-      .lp-currencyInput__placeholder {
+      .cto-currencyInput__placeholder {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -271,32 +271,32 @@
         margin: 0 auto;
       }
 
-      .lp-currencyInput__placeholder:hover {
+      .cto-currencyInput__placeholder:hover {
         background-color: #602576;
         color: white;
       }
 
-      .lp-chooseAmount__option,
-      .lp-currencyInput__placeholder {
+      .cto-chooseAmount__option,
+      .cto-currencyInput__placeholder {
         transition: color .2s;
       }
 
 
       /* Selected amount */
 
-      .lp-selectedAmount {
+      .cto-selectedAmount {
         margin: 0 auto;
         padding: 1rem;
         text-align: center;
       }
 
-      .lp-selectedAmount__largeNumber {
+      .cto-selectedAmount__largeNumber {
         color: #2D3748;
         font-size: 2.5rem;
         font-weight: bold;
       }
 
-      .lp-selectedAmount__smallText {
+      .cto-selectedAmount__smallText {
         color: #988CA1;
         font-size: .8125rem;
         font-weight: bold;
@@ -305,7 +305,7 @@
         padding: .25rem;
       }
 
-      .lp-success__container {
+      .cto-success__container {
         display: none;
         background-color: white;
         border-radius: .75rem;
@@ -314,11 +314,11 @@
         text-align: center;
       }
 
-      .lp-success__icon {
+      .cto-success__icon {
         font-size: 2.5rem;
       }
 
-      .lp-success__heading {
+      .cto-success__heading {
         color: #333;
         font-size: 1.5rem;
         font-weight: 700;
@@ -326,7 +326,7 @@
         padding: 1rem 0 .5rem;
       }
 
-      .lp-success__info {
+      .cto-success__info {
         color: #777;
         font-size: 1rem;
         font-weight: 500;
@@ -335,7 +335,7 @@
 
       /* Close button */
 
-      .lp-closeButton {
+      .cto-closeButton {
         color: #b1bccc;
         height: 1.25rem;
         width: 1.25rem;
@@ -346,148 +346,148 @@
         transition: color .2s;
       }
 
-      .lp-closeButton:hover {
+      .cto-closeButton:hover {
         color: #4A5568;
       }
 
       @media only screen and (max-width: 768px) {
-        .lp-footer {
+        .cto-footer {
           padding-top: 2rem;
         }
 
-        .lp-chooseAmount__optionsGroup {
+        .cto-chooseAmount__optionsGroup {
           display: none;
           flex-direction: column;
         }
 
-        .lp-chooseAmount__option:last-child {
+        .cto-chooseAmount__option:last-child {
           margin-right: 0;
         }
 
-        .lp-chooseAmount__option.lp-currencyInput {
+        .cto-chooseAmount__option.cto-currencyInput {
           margin-top: 1.5rem;
           margin-right: 0;
           width: 100%;
         }
 
-        .lp-button--amount {
+        .cto-button--amount {
           margin-left: 0;
         }
       }
 
       @media only screen and (max-width: 480px) {
-        .lp-chooseAmount__optionsGroup {
+        .cto-chooseAmount__optionsGroup {
           width: 14rem;
         }
 
-        .lp-chooseAmount__presetAmounts {
+        .cto-chooseAmount__presetAmounts {
           flex-direction: column;
           width: 100%;
         }
         
-        .lp-chooseAmount__option {
+        .cto-chooseAmount__option {
           margin-bottom: 1.5rem;
           margin-right: 0;
           width: 100%;
         }
 
-        .lp-chooseAmount__option.lp-currencyInput {
+        .cto-chooseAmount__option.cto-currencyInput {
           margin-top: 0;
         }
 
-        .lp-form {
+        .cto-form {
           padding: 0.75rem 1.5rem 1.5rem
         }
       }
     </style>
   </head>
 <body>
-  <div class="lp-footer" id="lp-footer">
-    <svg viewBox="0 0 24 24" class="lp-closeButton" id="lp-close-button">
+  <div class="cto-footer" id="cto-footer">
+    <svg viewBox="0 0 24 24" class="cto-closeButton" id="cto-close-button">
       <path
         fill="currentColor"
         d="M.439,21.44a1.5,1.5,0,0,0,2.122,2.121L11.823,14.3a.25.25,0,0,1,.354,0l9.262,9.263a1.5,1.5,0,1,0,2.122-2.121L14.3,12.177a.25.25,0,0,1,0-.354l9.263-9.262A1.5,1.5,0,0,0,21.439.44L12.177,9.7a.25.25,0,0,1-.354,0L2.561.44A1.5,1.5,0,0,0,.439,2.561L9.7,11.823a.25.25,0,0,1,0,.354Z">
       </path>
     </svg>
-    <div class="lp-footer__top">
-      <div class="lp-cta">
-        <h3 class="lp-cta__heading" id="lp-cta-title">
+    <div class="cto-footer__top">
+      <div class="cto-cta">
+        <h3 class="cto-cta__heading" id="cto-cta-title">
           This is the default header
         </h3>
-        <p class="lp-cta__text" id="lp-cta-text">
+        <p class="cto-cta__text" id="cto-cta-text">
           This is the default body text
         </p>
       </div>
-      <form action="#" class="lp-chooseAmount__form" id="lp-amount-form"> 
-        <div class="lp-chooseAmount__optionsGroup">
-          <div class="lp-chooseAmount__presetAmounts" id="lp-amounts">
-            <input type="radio" name="amount" id="lp-amount-1" class="lp-chooseAmount__radioInput" value="100" checked>
-            <label for="lp-amount-1" id="lp-amount-label-1" class="lp-chooseAmount__option">$1</label>
-            <input type="radio" name="amount" id="lp-amount-2"class="lp-chooseAmount__radioInput" value="200" >
-            <label for="lp-amount-2" id="lp-amount-label-2" class="lp-chooseAmount__option">$2</label>
-            <input type="radio" name="amount" id="lp-amount-3"class="lp-chooseAmount__radioInput" value="300" >
-            <label for="lp-amount-3" id="lp-amount-label-3" class="lp-chooseAmount__option">$3</label>
-            <input type="radio" name="amount" id="lp-amount-4"class="lp-chooseAmount__radioInput" value="400" >
-            <label for="lp-amount-4" id="lp-amount-label-4" class="lp-chooseAmount__option">$4</label>
+      <form action="#" class="cto-chooseAmount__form" id="cto-amount-form"> 
+        <div class="cto-chooseAmount__optionsGroup">
+          <div class="cto-chooseAmount__presetAmounts" id="cto-amounts">
+            <input type="radio" name="amount" id="cto-amount-1" class="cto-chooseAmount__radioInput" value="100" checked>
+            <label for="cto-amount-1" id="cto-amount-label-1" class="cto-chooseAmount__option">$1</label>
+            <input type="radio" name="amount" id="cto-amount-2"class="cto-chooseAmount__radioInput" value="200" >
+            <label for="cto-amount-2" id="cto-amount-label-2" class="cto-chooseAmount__option">$2</label>
+            <input type="radio" name="amount" id="cto-amount-3"class="cto-chooseAmount__radioInput" value="300" >
+            <label for="cto-amount-3" id="cto-amount-label-3" class="cto-chooseAmount__option">$3</label>
+            <input type="radio" name="amount" id="cto-amount-4"class="cto-chooseAmount__radioInput" value="400" >
+            <label for="cto-amount-4" id="cto-amount-label-4" class="cto-chooseAmount__option">$4</label>
           </div>
-          <div class="lp-chooseAmount__option lp-currencyInput" id="lp-custom-amount">
-            <label for="lp-custom-amount-input" class="lp-currencyInput__label">$</label>
-            <input type="number" min="1" max="1000" class="lp-currencyInput__input" id="lp-custom-amount-input">
-            <div class="lp-currencyInput__placeholder" id="lp-custom-amount-placeholder">
+          <div class="cto-chooseAmount__option cto-currencyInput" id="cto-custom-amount">
+            <label for="cto-custom-amount-input" class="cto-currencyInput__label">$</label>
+            <input type="number" min="1" max="1000" class="cto-currencyInput__input" id="cto-custom-amount-input">
+            <div class="cto-currencyInput__placeholder" id="cto-custom-amount-placeholder">
               Custom
             </div>
           </div>
         </div>
-        <button class="lp-button lp-button--amount" id="lp-confirm-amount">
+        <button class="cto-button cto-button--amount" id="cto-confirm-amount">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="25"
             height="19"
             viewBox="0 0 25 19"
-            class="lp-button__icon"
+            class="cto-button__icon"
           >
             <path
               d="M20.3056 9.44983C20.3928 9.53863 20.4968 9.6092 20.6115 9.6574C20.7262 9.7056 20.8493 9.73047 20.9737 9.73057C21.2247 9.73028 21.4654 9.63092 21.6435 9.45409L24.7213 6.3762C24.8981 6.19943 24.9974 5.95968 24.9974 5.70969C24.9974 5.45969 24.8981 5.21993 24.7213 5.04316C24.5445 4.86639 24.3048 4.76707 24.0548 4.76707C23.8048 4.76707 23.5651 4.86639 23.3883 5.04316L22.0616 6.36984V6.18568C22.0594 4.96242 21.7067 3.7654 21.0454 2.73633C20.3463 1.69488 19.3451 0.892488 18.1764 0.4371C17.0076 -0.0182877 15.7275 -0.104822 14.5081 0.189126C13.3471 0.495062 12.3205 1.17784 11.5894 2.13031L11.53 2.20196L11.4705 2.13031C10.7394 1.17796 9.71284 0.49521 8.55187 0.189126C8.07379 0.0645125 7.58181 0.00120285 7.08776 0.000732422C6.08486 0.0163444 5.10042 0.273 4.21755 0.749027C3.33468 1.22505 2.57928 1.90649 2.01511 2.73581C0.780241 4.60059 0.260719 7.91674 2.8594 11.1252C5.09404 13.8846 10.7563 18.4187 10.9961 18.6076C11.0654 18.6787 11.1481 18.7352 11.2395 18.7738C11.3309 18.8123 11.4292 18.8322 11.5284 18.8322C11.6276 18.8322 11.7258 18.8123 11.8172 18.7738C11.9087 18.7352 11.9914 18.6787 12.0606 18.6076C12.2602 18.4484 16.9799 14.6669 19.5038 11.9212C19.5509 11.8655 19.5747 11.7938 19.5704 11.7209C19.5661 11.6481 19.5338 11.5798 19.4804 11.5301L18.4525 10.4894C18.4263 10.4604 18.3942 10.4371 18.3585 10.421C18.3228 10.4049 18.2841 10.3964 18.2449 10.396C18.2057 10.3956 18.1669 10.4033 18.1309 10.4187C18.0948 10.434 18.0623 10.4567 18.0354 10.4852C16.0015 12.5757 13.8453 14.5437 11.5783 16.3788L11.5342 16.4223L11.5013 16.3958H11.4525V16.3554C10.5329 15.5987 6.23444 12.0236 4.45777 9.82821C2.56116 7.48689 2.83817 5.21457 3.72969 3.86773C4.19251 3.18265 4.85226 2.65408 5.62179 2.35184C6.39133 2.04959 7.23444 1.9879 8.03978 2.17489C8.99955 2.48675 9.85762 3.05133 10.5238 3.80935C10.9346 4.21319 11.2583 4.53265 11.5321 4.53265C11.8059 4.53265 12.127 4.21425 12.5372 3.80988C13.2031 3.05396 14.0599 2.49092 15.0181 2.17967C15.8233 1.99279 16.6663 2.05454 17.4357 2.35678C18.2052 2.65901 18.8648 3.18753 19.3276 3.87251C19.7903 4.5902 20.0283 5.42962 20.0111 6.28334L20.0085 6.46747L18.6091 5.04528C18.5224 4.95679 18.4189 4.88641 18.3048 4.83822C18.1906 4.79003 18.0681 4.765 17.9442 4.76456H17.9367C17.7509 4.76452 17.5692 4.81942 17.4144 4.92238C17.2597 5.02534 17.1388 5.17176 17.0671 5.34322C16.9954 5.51467 16.9759 5.70351 17.0112 5.88598C17.0465 6.06846 17.1349 6.23643 17.2654 6.36877L20.3056 9.44983Z"
               fill="white"
             ></path>
           </svg>
-          <span class="lp-button__label">
+          <span class="cto-button__label">
             Contribute
           </span>
         </button>
       </form>
     </div>
-    <div class="lp-footer__bottom" id="lp-footer-bottom">
-      <form class="lp-form" id="lp-userData-form">
-        <input name="name" placeholder="Your name" class="lp-form__input" id="lp-name-input" required>
-        <input name="email" type="email" placeholder="Your email address" class="lp-form__input" id="lp-email-input" required>
-        <button type="submit" class="lp-button lp-button--form" id="lp-start-payment">
+    <div class="cto-footer__bottom" id="cto-footer-bottom">
+      <form class="cto-form" id="cto-userData-form">
+        <input name="name" placeholder="Your name" class="cto-form__input" id="cto-name-input" required>
+        <input name="email" type="email" placeholder="Your email address" class="cto-form__input" id="cto-email-input" required>
+        <button type="submit" class="cto-button cto-button--form" id="cto-start-payment">
           Pay by card
         </button>
       </form>
-      <form class="lp-form lp-form--payment" id="lp-payment-form">
-        <div class="lp-selectedAmount">
-          <div id="lp-selected-amount" class="lp-selectedAmount__largeNumber"></div>
-          <div class="lp-selectedAmount__smallText">
+      <form class="cto-form cto-form--payment" id="cto-payment-form">
+        <div class="cto-selectedAmount">
+          <div id="cto-selected-amount" class="cto-selectedAmount__largeNumber"></div>
+          <div class="cto-selectedAmount__smallText">
             Contribution
           </div>
         </div>
         <div id="payment-request-button"></div>
         <div id="card-element"></div>
         <div id="card-errors" role="alert"></div>
-        <button id="lp-submit-payment" class="lp-button lp-button--form">
+        <button id="cto-submit-payment" class="cto-button cto-button--form">
           Contribute
-          <span id="lp-selected-amount"></span>
+          <span id="cto-selected-amount"></span>
         </button>
       </form>
-      <div class="lp-success__container" id="lp-success">
-        <div class="lp-success__icon">
+      <div class="cto-success__container" id="cto-success">
+        <div class="cto-success__icon">
           ✅
         </div>
-        <h4 class="lp-success__heading">
+        <h4 class="cto-success__heading">
           Thank you for your support.
         </h4>
-        <div class="lp-success__info">
+        <div class="cto-success__info">
           This screen will automatically close in 3 seconds.
         </div>
       </div>

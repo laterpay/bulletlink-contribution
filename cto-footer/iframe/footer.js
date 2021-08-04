@@ -14,7 +14,7 @@ const footerConfig = {
 // Dynamically update the parent window's iframe height
 let iframeHeight
 const adjustFooterHeight = (explicitHeight) => {
-  const footerHeight = explicitHeight || document.getElementById('lp-footer').offsetHeight
+  const footerHeight = explicitHeight || document.getElementById('cto-footer').offsetHeight
   if (iframeHeight !== footerHeight) {
     iframeHeight = footerHeight
     window.parent.postMessage({ ctoIframeHeight: iframeHeight }, '*')
@@ -46,18 +46,18 @@ const showFooter = () => {
   if (clientId && footerConfig) {
     // Set up the footer based on the returned data object.
     if (footerConfig.ctaHeader) {
-      $('#lp-cta-title').text(footerConfig.ctaHeader)
+      $('#cto-cta-title').text(footerConfig.ctaHeader)
     }
     if (footerConfig.ctaText) {
-      $('#lp-cta-text').text(footerConfig.ctaText)
+      $('#cto-cta-text').text(footerConfig.ctaText)
     }
     if (footerConfig.amounts) {
       for (var i = 0; i < 4; i++) {
-        $(`[for=lp-amount-${i + 1}]`).text('$' + footerConfig.amounts[i])
-        $(`#lp-amount-${i + 1}`).val(footerConfig.amounts[i] * 100)
+        $(`[for=cto-amount-${i + 1}]`).text('$' + footerConfig.amounts[i])
+        $(`#cto-amount-${i + 1}`).val(footerConfig.amounts[i] * 100)
       }
     }
-    $('#lp-footer').show()
+    $('#cto-footer').show()
     adjustFooterHeight()
   }
 }
@@ -87,19 +87,19 @@ const fetchFooterConfigFromDB = clientId => {
 /* EVENT HANDLERS */
 
 // Hide input placeholder if the user clicks on it
-$('#lp-custom-amount-placeholder').click(function (e) {
-  $('#lp-custom-amount-placeholder').hide()
+$('#cto-custom-amount-placeholder').click(function (e) {
+  $('#cto-custom-amount-placeholder').hide()
 })
 
 // Select custom amount input if the user clicks on it
-$('#lp-custom-amount').click(function () {
-  $('.lp-chooseAmount__radioInput').prop('checked', false)
-  $('#lp-custom-amount').addClass('selected')
-  $('#lp-custom-amount-input').focus()
+$('#cto-custom-amount').click(function () {
+  $('.cto-chooseAmount__radioInput').prop('checked', false)
+  $('#cto-custom-amount').addClass('selected')
+  $('#cto-custom-amount-input').focus()
 })
 
 // Enforce min & max value for input
-$('#lp-custom-amount-input').on('input', function () {
+$('#cto-custom-amount-input').on('input', function () {
   const value = $(this).val()
   if ((value !== '') && (value.indexOf('.') === -1)) {
     $(this).val(Math.max(Math.min(value, 999), 1))
@@ -107,55 +107,55 @@ $('#lp-custom-amount-input').on('input', function () {
 })
 
 // Reset custom amount input if the user clicks a preset amount
-$('#lp-amounts').click(function () {
-  $('#lp-custom-amount').removeClass('selected')
-  $('#lp-custom-amount-input').val('')
-  $('#lp-custom-amount-placeholder').css('display', 'flex')
+$('#cto-amounts').click(function () {
+  $('#cto-custom-amount').removeClass('selected')
+  $('#cto-custom-amount-input').val('')
+  $('#cto-custom-amount-placeholder').css('display', 'flex')
 })
 
 // Reset custom amount input if it is empty
-$('#lp-custom-amount-input').blur(function (e) {
+$('#cto-custom-amount-input').blur(function (e) {
   const isEmpty = !e.target.value
   if (isEmpty) {
-    $('#lp-custom-amount').removeClass('selected')
-    $('#lp-custom-amount-placeholder').css('display', 'flex')
-    $('#lp-amount-1').prop('checked', true)
+    $('#cto-custom-amount').removeClass('selected')
+    $('#cto-custom-amount-placeholder').css('display', 'flex')
+    $('#cto-amount-1').prop('checked', true)
   }
 })
 
 // Close the footer if the user clicks on the X
-$('#lp-close-button').click(function () {
-  $('#lp-footer').hide()
+$('#cto-close-button').click(function () {
+  $('#cto-footer').hide()
   window.parent.postMessage({ ctoFooterDismissed: true }, '*')
 })
 
 // What happens when the user confirms the contribution amount
-$('#lp-confirm-amount').click(function (e) {
+$('#cto-confirm-amount').click(function (e) {
   e.preventDefault()
   // Display optionsGroup (in case it's hidden)
-  $('.lp-chooseAmount__optionsGroup').css('display', 'flex')
+  $('.cto-chooseAmount__optionsGroup').css('display', 'flex')
   // Make footer full-page
-  $('#lp-footer').css('min-height', '100vh')
-  $('#lp-confirm-amount').hide()
+  $('#cto-footer').css('min-height', '100vh')
+  $('#cto-confirm-amount').hide()
   adjustFooterHeight('100vh')
   setTimeout(function () {
-    $('#lp-footer-bottom').css('display', 'flex')
-    $('#lp-name-input').focus()
+    $('#cto-footer-bottom').css('display', 'flex')
+    $('#cto-name-input').focus()
   }, 200)
 })
 
 // What happens when the user starts the payment process
-$('#lp-userData-form').submit(function (e) {
+$('#cto-userData-form').submit(function (e) {
   e.preventDefault()
 
   // Add loading state to button
-  $('#lp-start-payment').prop('disabled', true).text('Processing...')
+  $('#cto-start-payment').prop('disabled', true).text('Processing...')
 
   // Calculate amount
   let amount
-  const isCustomAmountSelected = !!$('#lp-custom-amount.selected').length
+  const isCustomAmountSelected = !!$('#cto-custom-amount.selected').length
   if (isCustomAmountSelected) {
-    amount = $('#lp-custom-amount-input').val().replace('$', '')
+    amount = $('#cto-custom-amount-input').val().replace('$', '')
     amount = parseFloat(amount) * 100
   } else {
     amount = $('input[name="amount"]:checked').val().replace('$', '')
@@ -168,8 +168,8 @@ $('#lp-userData-form').submit(function (e) {
   // Prepare data for AJAX request
   tabData = {
     amount,
-    name: $('#lp-name-input').val(),
-    email: $('#lp-email-input').val()
+    name: $('#cto-name-input').val(),
+    email: $('#cto-email-input').val()
   }
 
   // Make request to Tapper API
@@ -178,8 +178,8 @@ $('#lp-userData-form').submit(function (e) {
     {
       amount,
       client_id: clientId,
-      user_email: $('#lp-email-input').val(),
-      user_name: $('#lp-name-input').val()
+      user_email: $('#cto-email-input').val(),
+      user_name: $('#cto-name-input').val()
     },
     // success callback
     function (data) {
@@ -189,10 +189,10 @@ $('#lp-userData-form').submit(function (e) {
       console.log('Reponse from Tapper API', data)
 
       // Show payment form
-      $('#lp-amount-form').hide()
-      $('#lp-userData-form').hide()
-      $('#lp-payment-form').css('display', 'flex')
-      $('#lp-selected-amount').text('$' + amount / 100)
+      $('#cto-amount-form').hide()
+      $('#cto-userData-form').hide()
+      $('#cto-payment-form').css('display', 'flex')
+      $('#cto-selected-amount').text('$' + amount / 100)
 
       // Initialize Stripe Elements
       stripe = Stripe(tabData.publishableKey)
@@ -241,16 +241,16 @@ $('#lp-userData-form').submit(function (e) {
     .fail(function () {
       alert('An error occurred')
       // Remove loading state from button
-      $('#lp-start-payment').prop('disabled', false).text('Pay by card')
+      $('#cto-start-payment').prop('disabled', false).text('Pay by card')
     })
 
   console.log('Request to Tapper API', tabData)
 })
 
 // What happens when the user confirms the payment
-$('#lp-payment-form').submit(function (e) {
+$('#cto-payment-form').submit(function (e) {
   e.preventDefault()
-  $('#lp-submit-payment').prop('disabled', true).text('Processing...')
+  $('#cto-submit-payment').prop('disabled', true).text('Processing...')
 
   stripe.confirmCardPayment(
     tabData.clientSecret,
@@ -269,18 +269,18 @@ $('#lp-payment-form').submit(function (e) {
       // Show error to your customer (e.g., insufficient funds)
       alert(result.error.message)
       // Remove loading state from button
-      $('#lp-submit-payment').prop('disabled', false).text('Contribute')
+      $('#cto-submit-payment').prop('disabled', false).text('Contribute')
     } else {
       // The payment has been processed!
       if (result.paymentIntent.status === 'succeeded') {
         // Show success message
-        $('#lp-payment-form').hide()
-        $('#lp-success').show()
+        $('#cto-payment-form').hide()
+        $('#cto-success').show()
         window.parent.postMessage({ ctoContributionMade: true }, '*')
 
         // Automatically close footer after 3 seconds
         setTimeout(function () {
-          $('#lp-footer').fadeOut()
+          $('#cto-footer').fadeOut()
         }, 3000)
       }
     }
