@@ -35,7 +35,7 @@ const SuccessMessage = document.getElementById('cto-success')
 // Dynamically update the parent window's iframe height
 let iframeHeight
 const adjustFooterHeight = (explicitHeight) => {
-  const footerHeight = explicitHeight || document.getElementById('cto-footer').offsetHeight
+  const footerHeight = explicitHeight || Footer.offsetHeight
   if (iframeHeight !== footerHeight) {
     iframeHeight = footerHeight
     window.parent.postMessage({ ctoIframeHeight: iframeHeight }, '*')
@@ -44,23 +44,21 @@ const adjustFooterHeight = (explicitHeight) => {
 window.onload = () => adjustFooterHeight()
 window.onresize = () => adjustFooterHeight()
 window.onmessage = ({ data }) => {
-  if (data.clientId) {
-    clientId = data.clientId
-    // console.log(clientId)
-    Object.keys(footerConfig).forEach(key => {
-      // Replace footerConfig defaults if a corresponding data attribute exists
-      if (data[key]) footerConfig[key] = data[key]
-    })
-    const isConfigIncomplete = !!Object.values(footerConfig).filter(value => !value).length // returns true if at least one value is null
-    if (isConfigIncomplete) {
-      fetchFooterConfigFromDB(clientId)
-      return
-    }
-    showFooter()
+  if (!data.clientId) {
+    console.error('No client ID was specified. Contributions footer is hidden.')
   }
-  if (!clientId) {
-    console.error('No client ID was specified. Contributions footer will stay hidden.')
+  clientId = data.clientId
+  // console.log(clientId)
+  Object.keys(footerConfig).forEach(key => {
+    // Replace footerConfig defaults if a corresponding data attribute exists
+    if (data[key]) footerConfig[key] = data[key]
+  })
+  const isConfigIncomplete = Object.values(footerConfig).some(value => !value) // returns true if at least one value is null
+  if (isConfigIncomplete) {
+    fetchFooterConfigFromDB(clientId)
+    return
   }
+  showFooter()
 }
 
 const showFooter = () => {
@@ -95,14 +93,13 @@ const showFooter = () => {
 }
 
 const fetchFooterConfigFromDB = clientId => {
-  // Fetch footer options for given clientId
+  // Fetch footer config for given clientId
   fetch('https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/footers/' + clientId)
     .then(
       function (response) {
         if (response.status !== 200) {
           throw new Error(response.status)
         }
-
         // Success
         response.json().then(function (data) {
           // Populate empty footerConfig fields with data from the GET request
@@ -146,17 +143,16 @@ CustomAmountInput.addEventListener('input', function (e) {
   }
 })
 
-// Reset custom amount input if the user clicks a preset amount
+// Reset custom amount input if the user selects a preset amount
 PresetAmountsContainer.addEventListener('click', function (e) {
   CustomAmountButton.classList.remove('selected')
   CustomAmountInput.value = ''
   CustomAmountPlaceholder.style.display = 'flex'
 })
 
-// Reset custom amount input if it is empty
+// Reset custom amount input on blur (if it is empty)
 CustomAmountInput.addEventListener('blur', function (e) {
-  const isEmpty = !CustomAmountInput.value
-  if (isEmpty) {
+  if (!CustomAmountInput.value) {
     CustomAmountButton.classList.remove('selected')
     CustomAmountPlaceholder.style.display = 'flex'
     const SelectedPresetAmount = document.querySelector('#cto-amount-1')
@@ -164,7 +160,7 @@ CustomAmountInput.addEventListener('blur', function (e) {
   }
 })
 
-// Close the footer if the user clicks on the X
+// Close footer if the user clicks on the X
 CloseButton.addEventListener('click', function (e) {
   Footer.style.display = 'none'
   window.parent.postMessage({ ctoFooterDismissed: true }, '*')
@@ -173,10 +169,10 @@ CloseButton.addEventListener('click', function (e) {
 // What happens when the user confirms the contribution amount
 ConfirmAmountButton.addEventListener('click', function (e) {
   e.preventDefault()
-  // Display OptionsGroup (in case it's hidden)
+  // Display contributions amount buttons (in case they're hidden)
   const OptionsGroup = document.querySelector('.cto-chooseAmount__optionsGroup')
   OptionsGroup.style.display = 'flex'
-  // Make footer full-page
+  // Expand footer
   Footer.style.minHeight = '100vh'
   adjustFooterHeight('100vh')
   setTimeout(function () {
@@ -197,18 +193,19 @@ UserDataForm.addEventListener('submit', function (e) {
 
   // Calculate amount
   let amount
-  const isCustomAmountSelected = !!CustomAmountButton.classList.contains('selected')
+  const isCustomAmountSelected = CustomAmountButton.classList.contains('selected')
   if (isCustomAmountSelected) {
-    amount = CustomAmountInput.value.replace('$', '')
+    amount = CustomAmountInput.value
     amount = parseFloat(amount) * 100
   } else {
     const SelectedAmountInput = document.querySelector('input[name="amount"]:checked')
-    amount = SelectedAmountInput.value.replace('$', '')
+    amount = SelectedAmountInput.value
     amount = parseInt(amount)
   }
   if (amount < 100 || isNaN(amount)) {
     amount = 100 // minimum contribution $1
   }
+
   // Populate tabData object
   tabData = {
     amount,
@@ -216,15 +213,14 @@ UserDataForm.addEventListener('submit', function (e) {
     email: EmailInput.value
   }
 
-  // Prepare data for AJAX request
+  // Prepare data for API request
   const requestBody = new URLSearchParams()
   requestBody.append('amount', amount)
   requestBody.append('client_id', clientId)
   requestBody.append('user_email', tabData.email)
   requestBody.append('user_name', tabData.name)
 
-  // Make request to Tapper API
-  // console.log('Request to Tapper API', tabData)
+  // Send request to Tapper API
   fetch('https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/contribute', {
     method: 'post',
     body: requestBody
@@ -252,6 +248,7 @@ UserDataForm.addEventListener('submit', function (e) {
 
           // Initialize Stripe Elements
           stripe = Stripe(tabData.publishableKey)
+          const elements = stripe.elements()
 
           // Create payment request (Apple Pay)
           const paymentRequest = stripe.paymentRequest({
@@ -265,15 +262,7 @@ UserDataForm.addEventListener('submit', function (e) {
             // requestPayerEmail: true,
           })
 
-          const elements = stripe.elements()
-          const style = {
-            base: {
-              color: '#111',
-              fontSize: '18px'
-            }
-          }
-
-          // Mount Payment Request Button
+          // Mount Payment Request Button (Apple Pay)
           const prButton = elements.create('paymentRequestButton', {
             paymentRequest
           });
@@ -288,7 +277,14 @@ UserDataForm.addEventListener('submit', function (e) {
           })()
 
           // Mount credit card input
-          creditCardInput = elements.create('card', { style: style })
+          creditCardInput = elements.create('card', {
+            style: {
+              base: {
+                color: '#111',
+                fontSize: '18px'
+              }
+            }
+          })
           creditCardInput.mount('#card-element')
           setTimeout(function () {
             creditCardInput.focus()
