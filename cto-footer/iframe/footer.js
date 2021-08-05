@@ -75,11 +75,18 @@ const showFooter = () => {
       el.textContent = footerConfig.ctaText
     }
     if (footerConfig.amounts) {
-      for (var i = 0; i < 4; i++) {
+      for (let i = 0; i < 4; i++) {
         const label = document.querySelector(`[for=cto-amount-${i + 1}]`)
-        label.textContent = '$' + footerConfig.amounts[i]
         const input = document.querySelector(`#cto-amount-${i + 1}`)
-        input.value = footerConfig.amounts[i] * 100
+        const amount = footerConfig.amounts[i]
+        if (amount && !isNaN(amount) && amount < 1000) {
+          label.textContent = '$' + amount
+          input.value = amount * 100
+          continue
+        }
+        // Delete DOM elements if no amount was provided
+        label.remove()
+        input.remove()
       }
     }
     Footer.style.opacity = 1
