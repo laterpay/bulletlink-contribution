@@ -44,11 +44,11 @@ const adjustFooterHeight = (explicitHeight) => {
 window.onload = () => adjustFooterHeight()
 window.onresize = () => adjustFooterHeight()
 window.onmessage = ({ data }) => {
-  if (!data.clientId) {
-    console.error('No client ID was specified. Contributions footer is hidden.')
+  if (!data || !data.clientId) {
+    // console.error('No client ID was specified. Contributions footer is hidden.')
+    return
   }
   clientId = data.clientId
-  // console.log(clientId)
   Object.keys(footerConfig).forEach(key => {
     // Replace footerConfig defaults if a corresponding data attribute exists
     if (data[key]) footerConfig[key] = data[key]
@@ -249,32 +249,6 @@ UserDataForm.addEventListener('submit', function (e) {
           // Initialize Stripe Elements
           stripe = Stripe(tabData.publishableKey)
           const elements = stripe.elements()
-
-          // Create payment request (Apple Pay)
-          const paymentRequest = stripe.paymentRequest({
-            country: 'US',
-            currency: 'usd',
-            total: {
-              label: 'Demo total',
-              amount
-            }
-            // requestPayerName: true,
-            // requestPayerEmail: true,
-          })
-
-          // Mount Payment Request Button (Apple Pay)
-          const prButton = elements.create('paymentRequestButton', {
-            paymentRequest
-          });
-          (async () => {
-            // Check the availability of the Payment Request API first.
-            const result = await paymentRequest.canMakePayment()
-            if (result) {
-              prButton.mount('#payment-request-button')
-            } else {
-              document.getElementById('payment-request-button').style.display = 'none'
-            }
-          })()
 
           // Mount credit card input
           creditCardInput = elements.create('card', {
