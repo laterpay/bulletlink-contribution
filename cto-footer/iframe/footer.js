@@ -1,6 +1,5 @@
-/* GLOBAL VARIABLES */
-
 /* global alert, fetch, Stripe */
+
 let clientId, creditCardInput, stripe, tabData
 
 const footerConfig = {
@@ -14,19 +13,23 @@ const footerConfig = {
 const Footer = document.getElementById('cto-footer')
 const CloseButton = document.getElementById('cto-close-button')
 
+// Step 1: Select amount
 const SelectAmountForm = document.getElementById('cto-amount-form')
-const UserDataForm = document.getElementById('cto-userData-form')
-const PaymentForm = document.getElementById('cto-payment-form')
-
 const PresetAmountsContainer = document.getElementById('cto-preset-amounts')
 const CustomAmountButton = document.getElementById('cto-custom-amount')
 const CustomAmountInput = document.getElementById('cto-custom-amount-input')
 const CustomAmountPlaceholder = document.getElementById('cto-custom-amount-placeholder')
 const ConfirmAmountButton = document.getElementById('cto-confirm-amount')
 
+// Step 2: Enter user data
+const UserDataForm = document.getElementById('cto-userData-form')
+const SelectedAmountText = document.getElementById('cto-selected-amount')
 const NameInput = document.getElementById('cto-name-input')
 const EmailInput = document.getElementById('cto-email-input')
 const StartPaymentButton = document.getElementById('cto-start-payment')
+
+// Step 3: Enter credit card info and submit payment
+const PaymentForm = document.getElementById('cto-payment-form')
 const SubmitPaymentButton = document.getElementById('cto-submit-payment')
 const SuccessMessage = document.getElementById('cto-success')
 
@@ -65,17 +68,17 @@ const showFooter = () => {
   if (clientId && footerConfig) {
     // Set up the footer based on the returned data object.
     if (footerConfig.ctaHeader) {
-      const el = document.querySelector('#cto-cta-title')
+      const el = document.getElementById('cto-cta-title')
       el.textContent = footerConfig.ctaHeader
     }
     if (footerConfig.ctaText) {
-      const el = document.querySelector('#cto-cta-text')
+      const el = document.getElementById('cto-cta-text')
       el.textContent = footerConfig.ctaText
     }
     if (footerConfig.amounts) {
       for (let i = 0; i < 4; i++) {
         const label = document.querySelector(`[for=cto-amount-${i + 1}]`)
-        const input = document.querySelector(`#cto-amount-${i + 1}`)
+        const input = document.getElementById(`cto-amount-${i + 1}`)
         const amount = footerConfig.amounts[i]
         if (amount && !isNaN(amount) && amount < 1000) {
           label.textContent = '$' + amount
@@ -155,8 +158,8 @@ CustomAmountInput.addEventListener('blur', function (e) {
   if (!CustomAmountInput.value) {
     CustomAmountButton.classList.remove('selected')
     CustomAmountPlaceholder.style.display = 'flex'
-    const SelectedPresetAmount = document.querySelector('#cto-amount-1')
-    SelectedPresetAmount.checked = true
+    const FirstPresetAmount = document.querySelector('.cto-chooseAmount__radioInput')
+    FirstPresetAmount.checked = true
   }
 })
 
@@ -176,7 +179,7 @@ ConfirmAmountButton.addEventListener('click', function (e) {
   Footer.style.minHeight = '100vh'
   adjustFooterHeight('100vh')
   setTimeout(function () {
-    const BottomSection = document.querySelector('#cto-footer-bottom')
+    const BottomSection = document.getElementById('cto-footer-bottom')
     BottomSection.style.display = 'flex'
     ConfirmAmountButton.style.display = 'none'
     NameInput.focus()
@@ -243,7 +246,6 @@ UserDataForm.addEventListener('submit', function (e) {
           SelectAmountForm.style.display = 'none'
           UserDataForm.style.display = 'none'
           PaymentForm.style.display = 'flex'
-          const SelectedAmountText = document.getElementById('cto-selected-amount')
           SelectedAmountText.textContent = '$' + amount / 100
 
           // Initialize Stripe Elements

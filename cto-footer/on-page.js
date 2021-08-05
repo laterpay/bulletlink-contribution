@@ -24,25 +24,21 @@ const shouldShowFooter = (function () {
   const monthAgo = Date.now() - month
   const lastContributionAt = parseInt(localStorage.cto_last_contribution_at)
   const contributedThisMonth = lastContributionAt && lastContributionAt > monthAgo
-  /*
-  The footer will stay hidden if...
-    - the user has dismissed it in the last 24 hours (by clicking on the X)
-    - the user has made a contribution in the last 30 days
-  */
+  // Footer will be hidden if the user has made a contribution in the last 30 days
   const showFooter = !dismissed && !contributedThisMonth
   return showFooter
 })()
 
 if (shouldShowFooter) {
-  /* Insert iframe */
+  // Insert iframe
   const iframe = document.createElement('iframe')
   iframe.id = 'contributions-iframe'
   iframe.style.cssText = 'width: 100%; border: none; max-height: 100vh; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999999999;'
-  iframe.src = 'https://niklas.laterpaydemo.com/cto-footer/iframe/footer.html' // './cto-footer/iframe/footer.html'
+  iframe.src = 'https://niklas.laterpaydemo.com/cto-footer/iframe/footer.html'
   // Only append iframe once body has loaded
   waitForBody(() => document.body.appendChild(iframe))
 
-  /* Get all data attributes from script tag and pass them down to the iframe */
+  // Get all data attributes from script tag and pass them down to the iframe
   const scriptTag = document.getElementById('cto-footer')
   const footerConfig = { ...scriptTag.dataset }
   iframe.onload = function () {
@@ -53,7 +49,7 @@ if (shouldShowFooter) {
     iframe.contentWindow.postMessage(footerConfig, '*')
   }
 
-  /* Adjust the iframe's height dynamically */
+  // Adjust the iframe's height dynamically
   window.onmessage = (e) => {
     if (iframe) {
       const { ctoIframeHeight, ctoFooterDismissed, ctoContributionMade } = e.data
