@@ -1,9 +1,5 @@
 # On-page contributions footer
 
-## Demo
-
-[http://niklas.laterpaydemo.com/bulletlink/](http://niklas.laterpaydemo.com/bulletlink/)
-
 ## How to use it?
 
 Just add the following script tag to your site:
@@ -11,7 +7,7 @@ Just add the following script tag to your site:
 ```html
   <script
     id="cto-footer"
-    src="http://niklas.laterpaydemo.com/cto-footer/on-page.js"
+    src="https://footer.contribute.to/on-page.js"
     data-client-id="client.5c8ead95-9fff-48ca-ae87-53f5d3d3429e"
     data-cta-header="ABC needs your support"
     data-cta-text="We are working hard to bring you news that matters. Your contribution will help us continue to provide vital coverage during these important times."
