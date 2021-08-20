@@ -246,7 +246,7 @@ UserDataForm.addEventListener('submit', function (e) {
           SelectAmountForm.style.display = 'none'
           UserDataForm.style.display = 'none'
           PaymentForm.style.display = 'flex'
-          SelectedAmountText.textContent = '$' + amount / 100
+          SelectedAmountText.textContent = '$' + (amount / 100).toFixed(2)
 
           // Initialize Stripe Elements
           stripe = Stripe(tabData.publishableKey)
