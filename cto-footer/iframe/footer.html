@@ -419,26 +419,8 @@
           This is the default body text
         </p>
       </div>
-      <form action="#" class="cto-chooseAmount__form" id="cto-amount-form"> 
-        <div class="cto-chooseAmount__optionsGroup">
-          <div class="cto-chooseAmount__presetAmounts" id="cto-preset-amounts">
-            <input type="radio" name="amount" id="cto-amount-1" class="cto-chooseAmount__radioInput" value="100" checked>
-            <label for="cto-amount-1" id="cto-amount-label-1" class="cto-chooseAmount__option">$1</label>
-            <input type="radio" name="amount" id="cto-amount-2"class="cto-chooseAmount__radioInput" value="200" >
-            <label for="cto-amount-2" id="cto-amount-label-2" class="cto-chooseAmount__option">$2</label>
-            <input type="radio" name="amount" id="cto-amount-3"class="cto-chooseAmount__radioInput" value="300" >
-            <label for="cto-amount-3" id="cto-amount-label-3" class="cto-chooseAmount__option">$3</label>
-            <input type="radio" name="amount" id="cto-amount-4"class="cto-chooseAmount__radioInput" value="400" >
-            <label for="cto-amount-4" id="cto-amount-label-4" class="cto-chooseAmount__option">$4</label>
-          </div>
-          <div class="cto-chooseAmount__option cto-currencyInput" id="cto-custom-amount">
-            <label for="cto-custom-amount-input" class="cto-currencyInput__label">$</label>
-            <input type="number" min="1" max="1000" class="cto-currencyInput__input" id="cto-custom-amount-input">
-            <div class="cto-currencyInput__placeholder" id="cto-custom-amount-placeholder">
-              Custom
-            </div>
-          </div>
-        </div>
+       
+
         <button class="cto-button cto-button--amount" id="cto-confirm-amount">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -456,44 +438,9 @@
             Contribute
           </span>
         </button>
-      </form>
-    </div>
-    <div class="cto-footer__bottom" id="cto-footer-bottom">
-      <form class="cto-form" id="cto-userData-form">
-        <input name="name" placeholder="Your name" class="cto-form__input" id="cto-name-input" required>
-        <input name="email" type="email" placeholder="Your email address" class="cto-form__input" id="cto-email-input" required>
-        <button type="submit" class="cto-button cto-button--form" id="cto-start-payment">
-          Pay by card
-        </button>
-      </form>
-      <form class="cto-form cto-form--payment" id="cto-payment-form">
-        <div class="cto-selectedAmount">
-          <div id="cto-selected-amount" class="cto-selectedAmount__largeNumber"></div>
-          <div class="cto-selectedAmount__smallText">
-            Contribution
-          </div>
-        </div>
-        <div id="card-element"></div>
-        <div id="card-errors" role="alert"></div>
-        <button id="cto-submit-payment" class="cto-button cto-button--form">
-          Contribute
-          <span id="cto-selected-amount"></span>
-        </button>
-      </form>
-      <div class="cto-success__container" id="cto-success">
-        <div class="cto-success__icon">
-          ✅
-        </div>
-        <h4 class="cto-success__heading">
-          Thank you for your support.
-        </h4>
-        <div class="cto-success__info">
-          This overlay will automatically close after 3 seconds.
-        </div>
-      </div>
+
     </div>
   </div>
-  <script src="https://js.stripe.com/v3/"></script>
   <script src="footer.js"></script>
   </body>
 </html>
