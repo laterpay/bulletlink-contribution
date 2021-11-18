@@ -5,20 +5,22 @@ let clientId, creditCardInput, stripe, tabData
 const footerConfig = {
   ctaHeader: null,
   ctaText: null,
-  amounts: null
+  amounts: null,
+  clientId: null
 }
 
+console.log(footerConfig);
 /* DOM ELEMENTS */
 
 const Footer = document.getElementById('cto-footer')
 const CloseButton = document.getElementById('cto-close-button')
 
 // Step 1: Select amount
-const SelectAmountForm = document.getElementById('cto-amount-form')
-const PresetAmountsContainer = document.getElementById('cto-preset-amounts')
-const CustomAmountButton = document.getElementById('cto-custom-amount')
-const CustomAmountInput = document.getElementById('cto-custom-amount-input')
-const CustomAmountPlaceholder = document.getElementById('cto-custom-amount-placeholder')
+//const SelectAmountForm = document.getElementById('cto-amount-form')
+//const PresetAmountsContainer = document.getElementById('cto-preset-amounts')
+//const CustomAmountButton = document.getElementById('cto-custom-amount')
+//const CustomAmountInput = document.getElementById('cto-custom-amount-input')
+//const CustomAmountPlaceholder = document.getElementById('cto-custom-amount-placeholder')
 const ConfirmAmountButton = document.getElementById('cto-confirm-amount')
 
 // Step 2: Enter user data
@@ -75,21 +77,6 @@ const showFooter = () => {
       const el = document.getElementById('cto-cta-text')
       el.textContent = footerConfig.ctaText
     }
-    if (footerConfig.amounts) {
-      for (let i = 0; i < 4; i++) {
-        const label = document.querySelector(`[for=cto-amount-${i + 1}]`)
-        const input = document.getElementById(`cto-amount-${i + 1}`)
-        const amount = footerConfig.amounts[i]
-        if (amount && !isNaN(amount) && amount < 1000) {
-          label.textContent = '$' + amount
-          input.value = amount * 100
-          continue
-        }
-        // Delete DOM elements if no amount was provided
-        label.remove()
-        input.remove()
-      }
-    }
     Footer.style.opacity = 1
     adjustFooterHeight()
   }
@@ -124,196 +111,64 @@ const fetchFooterConfigFromDB = clientId => {
 /* EVENT HANDLERS */
 
 // Hide input placeholder if the user clicks on it
-CustomAmountPlaceholder.addEventListener('click', function (e) {
-  CustomAmountPlaceholder.style.display = 'none'
-})
+//CustomAmountPlaceholder.addEventListener('click', function (e) {
+//  CustomAmountPlaceholder.style.display = 'none'
+//})
 
 // Select custom amount input if the user clicks on it
-CustomAmountButton.addEventListener('click', function (e) {
-  const SelectedPresetAmount = document.querySelector('.cto-chooseAmount__radioInput:checked')
-  if (SelectedPresetAmount) {
-    SelectedPresetAmount.checked = false
-  }
-  CustomAmountButton.classList.add('selected')
-  CustomAmountInput.focus()
-})
+//CustomAmountButton.addEventListener('click', function (e) {
+// const SelectedPresetAmount = document.querySelector('.cto-chooseAmount__radioInput:checked')
+//  if (SelectedPresetAmount) {
+//    SelectedPresetAmount.checked = false
+//  }
+//  CustomAmountButton.classList.add('selected')
+//  CustomAmountInput.focus()
+//})
 
 // Enforce min & max value for input
-CustomAmountInput.addEventListener('input', function (e) {
-  const value = CustomAmountInput.value
-  if ((value !== '') && (value.indexOf('.') === -1)) {
-    CustomAmountInput.value = Math.max(Math.min(value, 999), 1)
-  }
-})
+//CustomAmountInput.addEventListener('input', function (e) {
+//  const value = CustomAmountInput.value
+//  if ((value !== '') && (value.indexOf('.') === -1)) {
+//    CustomAmountInput.value = Math.max(Math.min(value, 999), 1)
+//  }
+//})
 
 // Reset custom amount input if the user selects a preset amount
-PresetAmountsContainer.addEventListener('click', function (e) {
-  CustomAmountButton.classList.remove('selected')
-  CustomAmountInput.value = ''
-  CustomAmountPlaceholder.style.display = 'flex'
-})
+//PresetAmountsContainer.addEventListener('click', function (e) {
+//  CustomAmountButton.classList.remove('selected')
+//  CustomAmountInput.value = ''
+//  CustomAmountPlaceholder.style.display = 'flex'
+//})
 
 // Reset custom amount input on blur (if it is empty)
-CustomAmountInput.addEventListener('blur', function (e) {
-  if (!CustomAmountInput.value) {
-    CustomAmountButton.classList.remove('selected')
-    CustomAmountPlaceholder.style.display = 'flex'
-    const FirstPresetAmount = document.querySelector('.cto-chooseAmount__radioInput')
-    FirstPresetAmount.checked = true
-  }
-})
+//CustomAmountInput.addEventListener('blur', function (e) {
+//  if (!CustomAmountInput.value) {
+//    CustomAmountButton.classList.remove('selected')
+//   CustomAmountPlaceholder.style.display = 'flex'
+//    const FirstPresetAmount = document.querySelector('.cto-chooseAmount__radioInput')
+//    FirstPresetAmount.checked = true
+//  }
+//})
+
+  // Set the button to go to the contribute.to card
+
+
+  ConfirmAmountButton.addEventListener('click', function (e) {
+    if (footerConfig.clientId.includes("https")) {
+      window.open(footerConfig.clientId)
+      Footer.style.display = 'none'
+
+    }
+    else {
+      window.open('https://' + footerConfig.clientId)
+      Footer.style.display = 'none'
+    }
+    
+   })
+
 
 // Close footer if the user clicks on the X
 CloseButton.addEventListener('click', function (e) {
   Footer.style.display = 'none'
   window.parent.postMessage({ ctoFooterDismissed: true }, '*')
-})
-
-// What happens when the user confirms the contribution amount
-ConfirmAmountButton.addEventListener('click', function (e) {
-  e.preventDefault()
-  // Display contributions amount buttons (in case they're hidden)
-  const OptionsGroup = document.querySelector('.cto-chooseAmount__optionsGroup')
-  OptionsGroup.style.display = 'flex'
-  // Expand footer
-  Footer.style.minHeight = '100vh'
-  adjustFooterHeight('100vh')
-  setTimeout(function () {
-    const BottomSection = document.getElementById('cto-footer-bottom')
-    BottomSection.style.display = 'flex'
-    ConfirmAmountButton.style.display = 'none'
-    NameInput.focus()
-  }, 200)
-})
-
-// What happens when the user starts the payment process
-UserDataForm.addEventListener('submit', function (e) {
-  e.preventDefault()
-
-  // Add loading state to button
-  StartPaymentButton.disabled = true
-  StartPaymentButton.textContent = 'Processing...'
-
-  // Calculate amount
-  let amount
-  const isCustomAmountSelected = CustomAmountButton.classList.contains('selected')
-  if (isCustomAmountSelected) {
-    amount = CustomAmountInput.value
-    amount = parseFloat(amount) * 100
-  } else {
-    const SelectedAmountInput = document.querySelector('input[name="amount"]:checked')
-    amount = SelectedAmountInput.value
-    amount = parseInt(amount)
-  }
-  if (amount < 100 || isNaN(amount)) {
-    amount = 100 // minimum contribution $1
-  }
-
-  // Populate tabData object
-  tabData = {
-    amount,
-    name: NameInput.value,
-    email: EmailInput.value
-  }
-
-  // Prepare data for API request
-  const requestBody = new URLSearchParams()
-  requestBody.append('amount', amount)
-  requestBody.append('client_id', clientId)
-  requestBody.append('user_email', tabData.email)
-  requestBody.append('user_name', tabData.name)
-
-  // Send request to Tapper API
-  fetch('https://x8ki-letl-twmt.n7.xano.io/api:C1-jqt83/contribute', {
-    method: 'post',
-    body: requestBody
-  })
-    .then(
-      function (response) {
-        if (response.status !== 200) {
-          console.log('Looks like there was a problem. Status Code: ' + response.status)
-          return
-        }
-
-        // Success
-        response.json().then(function (data) {
-          // console.log('Reponse from Tapper API', data)
-
-          tabData.clientSecret = data.client_secret
-          tabData.publishableKey = data.publishable_key
-
-          // Show payment form
-          SelectAmountForm.style.display = 'none'
-          UserDataForm.style.display = 'none'
-          PaymentForm.style.display = 'flex'
-          SelectedAmountText.textContent = '$' + (amount / 100).toFixed(2)
-
-          // Initialize Stripe Elements
-          stripe = Stripe(tabData.publishableKey)
-          const elements = stripe.elements()
-
-          // Mount credit card input
-          creditCardInput = elements.create('card', {
-            style: {
-              base: {
-                color: '#111',
-                fontSize: '18px'
-              }
-            }
-          })
-          creditCardInput.mount('#card-element')
-          setTimeout(function () {
-            creditCardInput.focus()
-          }, 200)
-        })
-      })
-    .catch(function (err) {
-      alert('An error occurred')
-      console.log('Fetch Error', err)
-      // Remove loading state from button
-      StartPaymentButton.disabled = false
-      StartPaymentButton.textContent = 'Pay by card'
-    })
-})
-
-// What happens when the user confirms the payment
-PaymentForm.addEventListener('submit', function (e) {
-  e.preventDefault()
-  SubmitPaymentButton.disabled = true
-  SubmitPaymentButton.textContent = 'Processing...'
-
-  stripe.confirmCardPayment(
-    tabData.clientSecret,
-    {
-      payment_method: {
-        card: creditCardInput,
-        billing_details: {
-          email: tabData.email,
-          name: tabData.name
-        }
-      },
-      receipt_email: tabData.email
-    }
-  ).then(function (result) {
-    if (result.error) {
-      // Show error to your customer (e.g., insufficient funds)
-      alert(result.error.message)
-      // Remove loading state from button
-      SubmitPaymentButton.disabled = false
-      SubmitPaymentButton.textContent = 'Contribute'
-    } else {
-      // The payment has been processed!
-      if (result.paymentIntent.status === 'succeeded') {
-        // Show success message
-        PaymentForm.style.display = 'none'
-        SuccessMessage.style.display = 'block'
-        window.parent.postMessage({ ctoContributionMade: true }, '*')
-
-        // Automatically close footer after 3 seconds
-        setTimeout(function () {
-          Footer.style.opacity = 0
-        }, 3000)
-      }
-    }
-  })
 })
