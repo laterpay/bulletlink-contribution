@@ -2,6 +2,8 @@
 
 // Check browser support for Web Storage
 const browserSupportsWebStorage = typeof Storage !== 'undefined'
+const cardUrl = document.getElementById('client')
+
 
 const waitForBody = (callback) => {
   if (document.body) {
@@ -41,6 +43,8 @@ if (shouldShowFooter) {
   // Get all data attributes from script tag and pass them down to the iframe
   const scriptTag = document.getElementById('cto-footer')
   const footerConfig = { ...scriptTag.dataset }
+  console.log(footerConfig);
+
   iframe.onload = function () {
     if (footerConfig.amounts) {
       // Convert amounts string into an array
